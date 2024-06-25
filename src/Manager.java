@@ -23,7 +23,7 @@ public class Manager {
         generateNextId();
         subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
         Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
-        epic.subtaskId.add(newSubtask.getTaskId()); //и добавляем номер подзадачи в список подзадач эпика
+        epic.subtaskId.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
         epic.setTaskStatus(checkingEpicStatus(epic));
     }
 
@@ -181,18 +181,4 @@ public class Manager {
             System.out.println("Список задач пуст");
         }
     }
-
-
-
-/* a. Получение списка всех задач. +
- b. Удаление всех задач. +
- c. Получение по идентификатору.+
- d. Создание. Сам объект должен передаваться в качестве параметра. +
- e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
- f. Удаление по идентификатору.+
-Дополнительные методы:
-a. Получение списка всех подзадач определённого эпика.+
-*/
-
-
 }
