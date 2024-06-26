@@ -23,7 +23,9 @@ public class Manager {
         generateNextId();
         subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
         Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
-        epic.subtaskId.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
+        ArrayList subtaskIdUpdated = epic.getSubtaskId();
+        subtaskIdUpdated.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
+        epic.setSubtaskId(subtaskIdUpdated);
         epic.setTaskStatus(checkingEpicStatus(epic));
     }
 
@@ -61,7 +63,7 @@ public class Manager {
             System.out.println("Наименование эпика: " + epicList.get(id));
             System.out.println("Список подзадач: ");
             Epic epic = epicList.get(id); // берем эпик из мапы с конкретным номером
-            ArrayList<Integer> idSubtaskList = epic.subtaskId;
+            ArrayList<Integer> idSubtaskList = epic.getSubtaskId();
             for (int subtaskId : idSubtaskList) {
                 System.out.println(subtaskList.get(subtaskId));
             }
@@ -72,7 +74,7 @@ public class Manager {
         System.out.println("Наименование эпика: " + epicList.get(idNumber));
         System.out.println("Список подзадач: ");
         Epic epic = epicList.get(idNumber); // берем эпик из мапы с конкретным номером
-        ArrayList<Integer> idSubtaskList = epic.subtaskId;
+        ArrayList<Integer> idSubtaskList = epic.getSubtaskId();
         for (int subtaskId : idSubtaskList) {
             System.out.println(subtaskList.get(subtaskId));
         }
@@ -133,7 +135,7 @@ public class Manager {
         int sumNewStatus = 0;
         int sumDoneStatus = 0;
         TaskStatus taskStatus;
-        for (int id : epic.subtaskId) {
+        for (int id : epic.getSubtaskId()) {
             Subtask subtask = subtaskList.get(id);
             if (subtask.getTaskStatus() == TaskStatus.NEW) {
                 sumNewStatus++;
@@ -141,9 +143,9 @@ public class Manager {
                 sumDoneStatus++;
             }
         }
-        if (sumNewStatus == epic.subtaskId.size()) {
+        if (sumNewStatus == epic.getSubtaskId().size()) {
             taskStatus = TaskStatus.NEW;
-        } else if (sumDoneStatus == epic.subtaskId.size()) {
+        } else if (sumDoneStatus == epic.getSubtaskId().size()) {
             taskStatus = TaskStatus.DONE;
         } else {
             taskStatus = TaskStatus.IN_PROGRESS;
@@ -164,9 +166,11 @@ public class Manager {
     public void removeSubtaskById(int idNumber) {
         Subtask removeSubtask = subtaskList.get(idNumber);
         Epic epic = epicList.get(removeSubtask.getEpicId());
-        int index = epic.subtaskId.indexOf(idNumber);
+        int index = epic.getSubtaskId().indexOf(idNumber);
         if (!subtaskList.isEmpty()) {
-            epic.subtaskId.remove(index);
+            ArrayList subtaskIdUpdated = epic.getSubtaskId();
+            subtaskIdUpdated.remove(index);
+            epic.setSubtaskId(subtaskIdUpdated);
             subtaskList.remove(idNumber);
             System.out.println("Подзадача с id " + idNumber + ": " + "удалена");
             epic.setTaskStatus(checkingEpicStatus(epic));
