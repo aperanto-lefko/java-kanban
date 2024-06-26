@@ -9,17 +9,18 @@ class Task {
     private TaskStatus taskStatus;
 
 
-     Task(String taskName, String taskDescription) {
+    Task(String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
     }
-     Task(String taskName, String taskDescription, TaskStatus taskStatus) {
+
+    Task(String taskName, String taskDescription, TaskStatus taskStatus) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = taskStatus;
-          }
+    }
 
-     Task(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus) {
+    Task(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskId = idNumber;
@@ -38,15 +39,17 @@ class Task {
     public int hashCode() {
         return Objects.hash(taskName, taskDescription, taskId, taskStatus);
     }
+
     @Override
     public String toString() {
-        return "Задача{" +
+        return "{" +
                 "Наименование='" + taskName + '\'' +
                 ", описание='" + taskDescription + '\'' +
                 ", id=" + taskId +
                 ", статус =" + taskStatus +
                 '}';
     }
+
     public int getTaskId() {
         return taskId;
     }
@@ -54,6 +57,7 @@ class Task {
     public void setTaskId(int taskId) {
         this.taskId = taskId;
     }
+
     public TaskStatus getTaskStatus() {
         return taskStatus;
     }
@@ -62,7 +66,7 @@ class Task {
         this.taskStatus = taskStatus;
     }
 
-    }
+}
 
 
 

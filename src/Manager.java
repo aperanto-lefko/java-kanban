@@ -2,24 +2,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Manager {
-    static int nextId = 1;
-    HashMap<Integer, Task> taskList = new HashMap<>();
-    HashMap<Integer, Subtask> subtaskList = new HashMap<>();
-    HashMap<Integer, Epic> epicList = new HashMap<>();
+    private int id = 1;
+    private HashMap<Integer, Task> taskList = new HashMap<>();
+    private HashMap<Integer, Subtask> subtaskList = new HashMap<>();
+    private HashMap<Integer, Epic> epicList = new HashMap<>();
 
     private void generateNextId() {
-        nextId++;
+        id++;
     }
 
     public void add(Task newTask) {
-        newTask.setTaskId(nextId);
+        newTask.setTaskId(id);
         generateNextId();
         taskList.put(newTask.getTaskId(), newTask);
     }
 
     public void add(Subtask newSubtask) {
 
-        newSubtask.setTaskId(nextId);
+        newSubtask.setTaskId(id);
         generateNextId();
         subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
         Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
@@ -28,7 +28,7 @@ public class Manager {
     }
 
     public void add(Epic newEpic) {
-        newEpic.setTaskId(nextId);
+        newEpic.setTaskId(id);
         generateNextId();
         epicList.put(newEpic.getTaskId(), newEpic);
     }
@@ -36,7 +36,7 @@ public class Manager {
     public void printTask() {
         if (!taskList.isEmpty()) {
             for (Integer id : taskList.keySet()) {
-                System.out.println("Идентификационный номер: " + id);
+                System.out.println("Задача: идентификационный номер: " + id);
                 System.out.println(taskList.get(id));
             }
         } else {
@@ -47,7 +47,7 @@ public class Manager {
     public void printSubtask() {
         if (!subtaskList.isEmpty()) {
             for (Integer id : subtaskList.keySet()) {
-                System.out.println("Идентификационный номер: " + id);
+                System.out.println("Подзадача: идентификационный номер: " + id);
                 System.out.println(subtaskList.get(id));
             }
         } else {
@@ -57,8 +57,8 @@ public class Manager {
 
     public void printEpic() {
         for (Integer id : epicList.keySet()) {
-            System.out.println("Идентификационный номер: " + id);
-            System.out.println("Наименование: " + epicList.get(id));
+            System.out.println("Эпик: идентификационный номер: " + id);
+            System.out.println("Наименование эпика: " + epicList.get(id));
             System.out.println("Список подзадач: ");
             Epic epic = epicList.get(id); // берем эпик из мапы с конкретным номером
             ArrayList<Integer> idSubtaskList = epic.subtaskId;
@@ -69,7 +69,7 @@ public class Manager {
     }
 
     public void printingRequiredEpic(int idNumber) {
-        System.out.println("Наименование: " + epicList.get(idNumber));
+        System.out.println("Наименование эпика: " + epicList.get(idNumber));
         System.out.println("Список подзадач: ");
         Epic epic = epicList.get(idNumber); // берем эпик из мапы с конкретным номером
         ArrayList<Integer> idSubtaskList = epic.subtaskId;
@@ -147,7 +147,6 @@ public class Manager {
             taskStatus = TaskStatus.DONE;
         } else {
             taskStatus = TaskStatus.IN_PROGRESS;
-            ;
         }
         return taskStatus;
     }
@@ -163,14 +162,18 @@ public class Manager {
     }
 
     public void removeSubtaskById(int idNumber) {
+        Subtask removeSubtask = subtaskList.get(idNumber);
+        Epic epic = epicList.get(removeSubtask.getEpicId());
+        int index = epic.subtaskId.indexOf(idNumber);
         if (!subtaskList.isEmpty()) {
+            epic.subtaskId.remove(index);
             subtaskList.remove(idNumber);
             System.out.println("Подзадача с id " + idNumber + ": " + "удалена");
-
+            epic.setTaskStatus(checkingEpicStatus(epic));
         } else {
             System.out.println("Список задач пуст");
         }
-    }
+        }
 
     public void removeEpicById(int idNumber) {
         if (!epicList.isEmpty()) {

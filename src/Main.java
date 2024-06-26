@@ -45,10 +45,14 @@ public class Main {
         manager.update(catFoodUpdated);
         System.out.println("Список обновленных эпиков");
         manager.printEpic();
-        System.out.println("Список подзадач конкретного эпика");
-        manager.printingRequiredEpic(7);
-        System.out.println("Список всех подзадач");
-        manager.printSubtask();
+        //System.out.println("Список подзадач конкретного эпика");
+        //manager.printingRequiredEpic(7);
+        //System.out.println("Список всех подзадач");
+        //manager.printSubtask();
+        System.out.println("Удаление подзадачи");
+        manager.removeSubtaskById(6);
+        System.out.println("Список эпиков с обновленными подзадачами");
+        manager.printEpic();
 
     }
 }
