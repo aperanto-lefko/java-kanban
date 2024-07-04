@@ -1,12 +1,16 @@
+import java.util.ArrayList;
 import java.util.Objects;
 
 class Task {
+
+
 
     private final String taskName;
     private final String taskDescription; //описание
 
     private int taskId; //идентификационный номер
     private TaskStatus taskStatus;
+
 
 
     Task(String taskName, String taskDescription) {
@@ -66,6 +70,13 @@ class Task {
         this.taskStatus = taskStatus;
     }
 
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public String getTaskDescription() {
+        return taskDescription;
+    }
 }
 
 

@@ -1,40 +1,62 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Manager {
+public class InMemoryTaskManager implements TaskManager {
+
     private int id = 1;
+
     private HashMap<Integer, Task> taskList = new HashMap<>();
+
+
     private HashMap<Integer, Subtask> subtaskList = new HashMap<>();
     private HashMap<Integer, Epic> epicList = new HashMap<>();
+
+
+    private ArrayList<Integer> idTaskList = new ArrayList<>();
+    private ArrayList<Integer> idSubtaskList = new ArrayList<>();
+
+
+    private ArrayList<Integer> idEpicList = new ArrayList<>();
+
+    Managers manager = new Managers();
+    HistoryManager history = manager.getDefaultHistory();
+
 
     private void generateNextId() {
         id++;
     }
 
+    @Override
     public void add(Task newTask) {
         newTask.setTaskId(id);
+        idTaskList.add(id);
         generateNextId();
         taskList.put(newTask.getTaskId(), newTask);
     }
 
+    @Override
     public void add(Subtask newSubtask) {
 
         newSubtask.setTaskId(id);
+        idSubtaskList.add(id);
         generateNextId();
         subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
         Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
-        ArrayList subtaskIdUpdated = epic.getSubtaskId();
+        ArrayList<Integer> subtaskIdUpdated = epic.getSubtaskId();
         subtaskIdUpdated.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
         epic.setSubtaskId(subtaskIdUpdated);
         epic.setTaskStatus(checkingEpicStatus(epic));
     }
 
+    @Override
     public void add(Epic newEpic) {
         newEpic.setTaskId(id);
+        idEpicList.add(id);
         generateNextId();
         epicList.put(newEpic.getTaskId(), newEpic);
     }
 
+    @Override
     public void printTask() {
         if (!taskList.isEmpty()) {
             for (Integer id : taskList.keySet()) {
@@ -46,6 +68,7 @@ public class Manager {
         }
     }
 
+    @Override
     public void printSubtask() {
         if (!subtaskList.isEmpty()) {
             for (Integer id : subtaskList.keySet()) {
@@ -57,6 +80,7 @@ public class Manager {
         }
     }
 
+    @Override
     public void printEpic() {
         for (Integer id : epicList.keySet()) {
             System.out.println("Эпик: идентификационный номер: " + id);
@@ -70,6 +94,7 @@ public class Manager {
         }
     }
 
+    @Override
     public void printingRequiredEpic(int idNumber) {
         System.out.println("Наименование эпика: " + epicList.get(idNumber));
         System.out.println("Список подзадач: ");
@@ -80,57 +105,95 @@ public class Manager {
         }
     }
 
+    @Override
     public void removeAllTasks() {
         taskList.clear();
     }
 
+    @Override
     public void removeAllSubtasks() {
         subtaskList.clear();
     }
 
+    @Override
     public void removeAllEpics() {
         epicList.clear();
     }
 
-    public void searchTaskById(int idNumber) {
+    @Override
+    public Task searchTaskById(int idNumber) {
         if (!taskList.isEmpty()) {
             System.out.println("Задача с id " + idNumber + ": " + taskList.get(idNumber));
+            history.add(taskList.get(idNumber));
+            return taskList.get(idNumber);
         } else {
             System.out.println("Список задач пуст");
         }
+        return null;
     }
 
-    public void searchSubtaskById(int idNumber) {
+
+    @Override
+    public Subtask searchSubtaskById(int idNumber) {
         if (!subtaskList.isEmpty()) {
-            System.out.println("Задача с id " + idNumber + ": " + subtaskList.get(idNumber));
+            System.out.println("Подзадача с id " + idNumber + ": " + subtaskList.get(idNumber));
+            history.add(subtaskList.get(idNumber));
+            return subtaskList.get(idNumber);
         } else {
             System.out.println("Список задач пуст");
         }
+        return null;
     }
 
-    public void searchEpicById(int idNumber) {
+    @Override
+    public Epic searchEpicById(int idNumber) {
         if (!epicList.isEmpty()) {
             System.out.println("Эпик с id " + idNumber + ": " + epicList.get(idNumber));
+            history.add(epicList.get(idNumber));
+            return epicList.get(idNumber);
         } else {
             System.out.println("Список задач пуст");
         }
+        return null;
     }
 
+    @Override
     public void update(Task updatedTask) {
-        taskList.put(updatedTask.getTaskId(), updatedTask);
+        int updatedTaskId = updatedTask.getTaskId();
+        if (idSubtaskList.contains(updatedTaskId) || idEpicList.contains(updatedTaskId)) { //проверяем, чтобы не было пересечений по id подзадач и эпиков
+            System.out.println("Задача не может быть обновлена с данным id");
+        } else {
+            taskList.put(updatedTask.getTaskId(), updatedTask);
+        }
     }
 
+    @Override
     public void update(Subtask updatedSubtask) {
-        subtaskList.put(updatedSubtask.getTaskId(), updatedSubtask); //заменили в хэштаблице обновленную задачу
-        Epic epic = epicList.get(updatedSubtask.getEpicId());
-        epic.setTaskStatus(checkingEpicStatus(epic));
+        int updatedSubtaskId = updatedSubtask.getTaskId();
+        if (idTaskList.contains(updatedSubtaskId) || idEpicList.contains(updatedSubtaskId)) {
+            System.out.println("Подзадача не может быть обновлена с данным id");
+        } else {
+            subtaskList.put(updatedSubtask.getTaskId(), updatedSubtask); //заменили в хэштаблице обновленную задачу
+            Epic epic = epicList.get(updatedSubtask.getEpicId());
+            epic.setTaskStatus(checkingEpicStatus(epic));
+        }
     }
 
+    @Override
     public void update(Epic updatedEpic) {
-        epicList.put(updatedEpic.getTaskId(), updatedEpic);
-        updatedEpic.setTaskStatus(checkingEpicStatus(updatedEpic));
+        int updatedEpicId = updatedEpic.getTaskId();
+        ArrayList<Integer> updatedEpicSubtaskList = updatedEpic.getSubtaskId();
+        if (idTaskList.contains(updatedEpicId) || idSubtaskList.contains(updatedEpicId)) {
+            System.out.println("Эпик не может быть обновлен с данным id");
+        } else if (updatedEpicSubtaskList.contains(updatedEpicId)) {
+            System.out.println("Эпик не может быть обновлен с данными id подзадач");
+        } else {
+            epicList.put(updatedEpic.getTaskId(), updatedEpic);
+            updatedEpic.setTaskStatus(checkingEpicStatus(updatedEpic));
+        }
     }
 
+    @Override
     public TaskStatus checkingEpicStatus(Epic epic) {
         int sumNewStatus = 0;
         int sumDoneStatus = 0;
@@ -153,6 +216,7 @@ public class Manager {
         return taskStatus;
     }
 
+    @Override
     public void removeTaskById(int idNumber) {
         if (!taskList.isEmpty()) {
             taskList.remove(idNumber);
@@ -163,6 +227,7 @@ public class Manager {
         }
     }
 
+    @Override
     public void removeSubtaskById(int idNumber) {
         Subtask removeSubtask = subtaskList.get(idNumber);
         Epic epic = epicList.get(removeSubtask.getEpicId());
@@ -177,8 +242,9 @@ public class Manager {
         } else {
             System.out.println("Список задач пуст");
         }
-        }
+    }
 
+    @Override
     public void removeEpicById(int idNumber) {
         if (!epicList.isEmpty()) {
             epicList.remove(idNumber);
@@ -188,4 +254,44 @@ public class Manager {
             System.out.println("Список задач пуст");
         }
     }
+
+    @Override
+    public void getHistory() {
+        ArrayList<Task> historyList = history.getHistory();
+        System.out.println("История просмотра");
+        for (Task task : historyList) {
+            System.out.println(task);
+        }
+    }
+
+    public HashMap<Integer, Task> getTaskList() {
+        return taskList;
+    }
+
+    public HashMap<Integer, Subtask> getSubtaskList() {
+        return subtaskList;
+    }
+
+    public HashMap<Integer, Epic> getEpicList() {
+        return epicList;
+    }
+
+    public ArrayList<Task> getHistoryList() {
+        return history.getHistory();
+    }
+
+    public ArrayList<Integer> getIdTaskList() {
+        return idTaskList;
+    }
+
+    public ArrayList<Integer> getIdSubtaskList() {
+        return idSubtaskList;
+    }
+
+    public ArrayList<Integer> getIdEpicList() {
+        return idEpicList;
+    }
 }
+
+
+
