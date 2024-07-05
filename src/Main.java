@@ -5,6 +5,7 @@ public class Main {
     public static void main(String[] args) {
         Managers manager = new Managers();
         TaskManager taskManager = manager.getDefault();
+        HistoryManager historyManager = manager.getDefaultHistory();
 
         Task buyingCoffee = new Task("Купить кофе", "Зерновой", TaskStatus.NEW);
         Task buyingJam = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
@@ -12,7 +13,7 @@ public class Main {
         taskManager.add(buyingJam);
         System.out.println("Список задач");
         taskManager.printTask();
-        //taskManager.searchTaskById(2);
+        taskManager.searchTaskById(2);
         Task buyingJamNew = new Task("Купить варенье", "Малиновое", 2, TaskStatus.IN_PROGRESS);
         taskManager.update(buyingJamNew);
         System.out.println("Обновленный список задач");
@@ -46,10 +47,10 @@ public class Main {
         taskManager.update(catFoodUpdated);
         System.out.println("Список обновленных эпиков");
         taskManager.printEpic();
-        //System.out.println("Список подзадач конкретного эпика");
-        //taskManager.printingRequiredEpic(7);
-        //System.out.println("Список всех подзадач");
-        //taskManager.printSubtask();
+        System.out.println("Список подзадач конкретного эпика");
+        taskManager.printingRequiredEpic(7);
+        System.out.println("Список всех подзадач");
+        taskManager.printSubtask();
         System.out.println("Удаление подзадачи");
         taskManager.removeSubtaskById(6);
         System.out.println("Список эпиков с обновленными подзадачами");
@@ -57,7 +58,7 @@ public class Main {
         taskManager.searchTaskById(2);
         taskManager.searchEpicById(7);
         taskManager.searchSubtaskById(8);
-        taskManager.getHistory();
+        taskManager.printHistory();
 
     }
 }

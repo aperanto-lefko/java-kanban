@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Objects;
 
 class Task {
@@ -13,10 +12,6 @@ class Task {
 
 
 
-    Task(String taskName, String taskDescription) {
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-    }
 
     Task(String taskName, String taskDescription, TaskStatus taskStatus) {
         this.taskName = taskName;

@@ -1,22 +1,18 @@
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
 
     private int id = 1;
 
-    private HashMap<Integer, Task> taskList = new HashMap<>();
+
+    private Map<Integer, Task> taskList = new HashMap<>();
 
 
-    private HashMap<Integer, Subtask> subtaskList = new HashMap<>();
-    private HashMap<Integer, Epic> epicList = new HashMap<>();
+    private Map<Integer, Subtask> subtaskList = new HashMap<>();
+    private Map<Integer, Epic> epicList = new HashMap<>();
 
-
-    private ArrayList<Integer> idTaskList = new ArrayList<>();
-    private ArrayList<Integer> idSubtaskList = new ArrayList<>();
-
-
-    private ArrayList<Integer> idEpicList = new ArrayList<>();
 
     Managers manager = new Managers();
     HistoryManager history = manager.getDefaultHistory();
@@ -29,7 +25,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void add(Task newTask) {
         newTask.setTaskId(id);
-        idTaskList.add(id);
         generateNextId();
         taskList.put(newTask.getTaskId(), newTask);
     }
@@ -38,11 +33,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void add(Subtask newSubtask) {
 
         newSubtask.setTaskId(id);
-        idSubtaskList.add(id);
         generateNextId();
         subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
         Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
-        ArrayList<Integer> subtaskIdUpdated = epic.getSubtaskId();
+        List<Integer> subtaskIdUpdated = epic.getSubtaskId();
         subtaskIdUpdated.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
         epic.setSubtaskId(subtaskIdUpdated);
         epic.setTaskStatus(checkingEpicStatus(epic));
@@ -51,7 +45,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void add(Epic newEpic) {
         newEpic.setTaskId(id);
-        idEpicList.add(id);
         generateNextId();
         epicList.put(newEpic.getTaskId(), newEpic);
     }
@@ -87,7 +80,7 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Наименование эпика: " + epicList.get(id));
             System.out.println("Список подзадач: ");
             Epic epic = epicList.get(id); // берем эпик из мапы с конкретным номером
-            ArrayList<Integer> idSubtaskList = epic.getSubtaskId();
+            List<Integer> idSubtaskList = epic.getSubtaskId();
             for (int subtaskId : idSubtaskList) {
                 System.out.println(subtaskList.get(subtaskId));
             }
@@ -99,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
         System.out.println("Наименование эпика: " + epicList.get(idNumber));
         System.out.println("Список подзадач: ");
         Epic epic = epicList.get(idNumber); // берем эпик из мапы с конкретным номером
-        ArrayList<Integer> idSubtaskList = epic.getSubtaskId();
+        List<Integer> idSubtaskList = epic.getSubtaskId();
         for (int subtaskId : idSubtaskList) {
             System.out.println(subtaskList.get(subtaskId));
         }
@@ -160,7 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Task updatedTask) {
         int updatedTaskId = updatedTask.getTaskId();
-        if (idSubtaskList.contains(updatedTaskId) || idEpicList.contains(updatedTaskId)) { //проверяем, чтобы не было пересечений по id подзадач и эпиков
+        if (subtaskList.containsKey(updatedTaskId) || epicList.containsKey(updatedTaskId)) { //проверяем, чтобы не было пересечений по id подзадач и эпиков
             System.out.println("Задача не может быть обновлена с данным id");
         } else {
             taskList.put(updatedTask.getTaskId(), updatedTask);
@@ -170,7 +163,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Subtask updatedSubtask) {
         int updatedSubtaskId = updatedSubtask.getTaskId();
-        if (idTaskList.contains(updatedSubtaskId) || idEpicList.contains(updatedSubtaskId)) {
+        if (taskList.containsKey(updatedSubtaskId) || epicList.containsKey(updatedSubtaskId)) {
             System.out.println("Подзадача не может быть обновлена с данным id");
         } else {
             subtaskList.put(updatedSubtask.getTaskId(), updatedSubtask); //заменили в хэштаблице обновленную задачу
@@ -182,8 +175,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void update(Epic updatedEpic) {
         int updatedEpicId = updatedEpic.getTaskId();
-        ArrayList<Integer> updatedEpicSubtaskList = updatedEpic.getSubtaskId();
-        if (idTaskList.contains(updatedEpicId) || idSubtaskList.contains(updatedEpicId)) {
+        List<Integer> updatedEpicSubtaskList = updatedEpic.getSubtaskId();
+        if (taskList.containsKey(updatedEpicId) || subtaskList.containsKey(updatedEpicId)) {
             System.out.println("Эпик не может быть обновлен с данным id");
         } else if (updatedEpicSubtaskList.contains(updatedEpicId)) {
             System.out.println("Эпик не может быть обновлен с данными id подзадач");
@@ -233,7 +226,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epicList.get(removeSubtask.getEpicId());
         int index = epic.getSubtaskId().indexOf(idNumber);
         if (!subtaskList.isEmpty()) {
-            ArrayList subtaskIdUpdated = epic.getSubtaskId();
+            List<Integer> subtaskIdUpdated = epic.getSubtaskId();
             subtaskIdUpdated.remove(index);
             epic.setSubtaskId(subtaskIdUpdated);
             subtaskList.remove(idNumber);
@@ -256,41 +249,29 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void getHistory() {
-        ArrayList<Task> historyList = history.getHistory();
-        System.out.println("История просмотра");
-        for (Task task : historyList) {
-            System.out.println(task);
-        }
+    public void printHistory() {
+        history.printHistory();
     }
 
-    public HashMap<Integer, Task> getTaskList() {
-        return taskList;
-    }
-
-    public HashMap<Integer, Subtask> getSubtaskList() {
-        return subtaskList;
-    }
-
-    public HashMap<Integer, Epic> getEpicList() {
-        return epicList;
-    }
-
-    public ArrayList<Task> getHistoryList() {
+    @Override
+    public List<Task> getHistory() {
         return history.getHistory();
     }
 
-    public ArrayList<Integer> getIdTaskList() {
-        return idTaskList;
+    @Override
+    public Map<Integer, Task> getTaskList() {
+        return taskList;
     }
 
-    public ArrayList<Integer> getIdSubtaskList() {
-        return idSubtaskList;
+    public Map<Integer, Subtask> getSubtaskList() {
+        return subtaskList;
     }
 
-    public ArrayList<Integer> getIdEpicList() {
-        return idEpicList;
+    public Map<Integer, Epic> getEpicList() {
+        return epicList;
     }
+
+
 }
 
 

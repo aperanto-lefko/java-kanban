@@ -1,5 +1,6 @@
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
     void add(Task newTask);
@@ -41,13 +42,15 @@ public interface TaskManager {
     void removeSubtaskById(int idNumber);
 
     void removeEpicById(int idNumber);
-    void getHistory();
-    HashMap<Integer, Task> getTaskList();
-    HashMap<Integer, Subtask> getSubtaskList();
-   HashMap<Integer, Epic> getEpicList();
-    ArrayList<Task> getHistoryList();
-    ArrayList<Integer> getIdTaskList();
-    ArrayList<Integer> getIdSubtaskList();
-    ArrayList<Integer> getIdEpicList();
+
+
+    Map<Integer, Task> getTaskList();
+
+    Map<Integer, Subtask> getSubtaskList();
+
+    Map<Integer, Epic> getEpicList();
+
+    void printHistory();
+    List<Task> getHistory();
 
 }

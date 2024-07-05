@@ -1,22 +1,30 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    ArrayList<Task> historyList = new ArrayList<>();
+    List<Task> listOfViewedTasks = new ArrayList<>();
 
     @Override
     public void add(Task task) {
-        if (historyList.size() < 10) {
-            historyList.add(task);
+        if (listOfViewedTasks.size() < 10) {
+            listOfViewedTasks.add(task);
         } else {
-            historyList.remove(0);
-            historyList.add(task);
+            listOfViewedTasks.remove(0);
+            listOfViewedTasks.add(task);
         }
     }
 
     @Override
-    public ArrayList<Task> getHistory() {
-        return historyList;
+    public List<Task> getHistory() {
+        return listOfViewedTasks;
     }
 
+    @Override
+    public void printHistory() {
+        System.out.println("История просмотра");
+        for (Task task : listOfViewedTasks) {
+            System.out.println(task);
+        }
 
+    }
 }
