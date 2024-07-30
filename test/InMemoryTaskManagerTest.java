@@ -156,6 +156,42 @@ class InMemoryTaskManagerTest {
         Assertions.assertFalse(epicList.containsKey(subtaskId)); // в списке id эпиков нет id подзадачи, подзадача не добавится
     }
 
+    @Test
+    void checkingEpicNumberWhenDeleting() { //проверка, что номер эпика не удалился при удалении подзадачи
+        Epic catFood = new Epic("Покормить кота", "Корм для толстых котов и миска", TaskStatus.NEW);
+        taskManager.add(catFood);
+        Subtask storeSelection = new Subtask("Выбор магазина", "Магазин около дома", TaskStatus.NEW, 1);
+        taskManager.add(storeSelection);
+        Subtask foodSelection = new Subtask("Выбор корма", "Корм для толстых котов", TaskStatus.NEW, 1);
+        taskManager.add(foodSelection);
+        Subtask bowlSelection = new Subtask("Выбор миски", "Миска стеклянная", TaskStatus.NEW, 1);
+        taskManager.add(bowlSelection);
+        int subtaskId = foodSelection.getTaskId();
+        taskManager.removeSubtaskById(subtaskId);
+        int epicNumber = bowlSelection.getEpicId();
+        Assertions.assertEquals(1, epicNumber, "Номер удален");
+    }
+    @Test
+    void checkingTheListOfSubtasks() {
+        Epic catFood = new Epic("Покормить кота", "Корм для толстых котов и миска", TaskStatus.NEW);
+        taskManager.add(catFood);
+        Subtask storeSelection = new Subtask("Выбор магазина", "Магазин около дома", TaskStatus.NEW, 1);
+        taskManager.add(storeSelection);
+        Subtask foodSelection = new Subtask("Выбор корма", "Корм для толстых котов", TaskStatus.NEW, 1);
+        taskManager.add(foodSelection);
+        Subtask bowlSelection = new Subtask("Выбор миски", "Миска стеклянная", TaskStatus.NEW, 1);
+        taskManager.add(bowlSelection);
+        int subtaskId = foodSelection.getTaskId();
+        taskManager.removeSubtaskById(subtaskId);
+        List<Integer> subtaskList = catFood.getSubtaskId();
+        Integer deletedId = null ;
+        for (Integer id: subtaskList) {
+            if (id == subtaskId) {
+                deletedId = id;
+            } else continue;
+        }
+        Assertions.assertNull(deletedId, "id найден " );
+    }
 }
 
 
