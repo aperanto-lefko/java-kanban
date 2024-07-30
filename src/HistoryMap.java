@@ -96,7 +96,8 @@ public class HistoryMap<K, V> {
         }
         return historyList;
     }
-    public void removeFromHistory (K key) {
+
+    public void removeFromHistory(K key) {
         if (historyMap.containsKey(key)) {
             Node<V> deletedNode = (Node<V>) historyMap.get(key);
             if (deletedNode != head && deletedNode != tail) {
