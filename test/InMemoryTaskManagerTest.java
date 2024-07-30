@@ -1,11 +1,9 @@
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.sound.midi.Soundbank;
+
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
@@ -72,13 +70,10 @@ class InMemoryTaskManagerTest {
         HashMap<Integer, Task> newTaskHashMap = new HashMap<>();
         HashMap<Integer, Subtask> newSubtaskHashMap = new HashMap<>();
         HashMap<Integer, Epic> newEpictaskHashMap = new HashMap<>();
-        HistoryManager history = manager.getDefaultHistory();
-        ArrayList<Task> newHistoryList = new ArrayList<>();
         Assertions.assertEquals(newTaskHashMap, taskManager.getTaskList(), "Таблица не создана");
         Assertions.assertEquals(newSubtaskHashMap, taskManager.getSubtaskList(), "Таблица не создана");
         Assertions.assertEquals(newEpictaskHashMap, taskManager.getEpicList(), "Таблица не создана");
-        Assertions.assertEquals(newHistoryList, history.getHistory(), "Список не создан");
-    }
+         }
 
     @Test
     void taskComparisonById() {

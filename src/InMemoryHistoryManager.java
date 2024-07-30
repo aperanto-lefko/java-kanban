@@ -1,14 +1,12 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    List<Task> listOfViewedTasks = new ArrayList<>();
+
     HistoryMap historyMap = new HistoryMap<>();
 
 
     @Override
     public void add(Task task) {
-        //listOfViewedTasks.add(task);
         historyMap.put(task.getTaskId(), task);
     }
 
