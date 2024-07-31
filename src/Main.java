@@ -64,7 +64,10 @@ public class Main {
         taskManager.searchEpicById(7);
         taskManager.searchTaskById(2);
         System.out.println("Проверка удаления");
-        taskManager.removeSubtaskById(8);
+
+        taskManager.searchEpicById(7);
+        taskManager.searchTaskById(2);
+        taskManager.searchSubtaskById(8);
         taskManager.printHistory();
 
     }

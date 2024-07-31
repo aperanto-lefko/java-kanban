@@ -2,7 +2,7 @@ import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    HistoryMap historyMap = new HistoryMap<>();
+    private HistoryMap historyMap = new HistoryMap<>();
 
 
     @Override
