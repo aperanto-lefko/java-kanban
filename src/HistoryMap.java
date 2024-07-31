@@ -3,28 +3,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class HistoryMap<Integer, Task> {
+public class HistoryMap<K, V> {
 
-    public Map<Integer, Task> historyMap;
+    public Map<K, V> historyMap;
 
     public HistoryMap() {
         historyMap = new HashMap<>();
     }
 
-    public Node<Task> head; //голова
-    public Node<Task> tail = null; //хвост
-    public Node<Task> task;
+    public Node<V> head; //голова
+    public Node<V> tail = null; //хвост
+    public Node<V> task;
 
-    public Node<Task> oldTail; //старый хвост
+    public Node<V> oldTail; //старый хвост
 
-    public void put(Integer key, Task value) {
+    public void put(K key, V value) {
 
 
         if (!historyMap.containsKey(key)) {
 
             oldTail = tail; //старый хвост
-            Node<Task> node = new Node<>(oldTail, value, null);
-            historyMap.put(key, (Task) node);
+            Node<V> node = new Node<>(oldTail, value, null);
+            historyMap.put(key, (V) node);
             tail = node;
             if (oldTail != null) {
                 oldTail.next = node;
@@ -33,59 +33,59 @@ public class HistoryMap<Integer, Task> {
             }
 
         } else {
-            Node<Task> existingNode = (Node<Task>) historyMap.get(key);
+            Node<V> existingNode = (Node<V>) historyMap.get(key);
             if (existingNode != head && existingNode != tail) {
-                Node<Task> prevExistingNode = existingNode.prev;
-                Node<Task> nextExistingNode = existingNode.next;
+                Node<V> prevExistingNode = existingNode.prev;
+                Node<V> nextExistingNode = existingNode.next;
                 historyMap.remove(key);
                 prevExistingNode.next = nextExistingNode;
                 nextExistingNode.prev = prevExistingNode;
-                for (Task node : historyMap.values()) {
-                    Node<Task> oldTailNode = (Node<Task>) node;
+                for (V node : historyMap.values()) {
+                    Node<V> oldTailNode = (Node<V>) node;
                     if (oldTailNode.next == null) {
-                        Node<Task> tailNode = new Node<>(oldTailNode, value, null);
+                        Node<V> tailNode = new Node<>(oldTailNode, value, null);
                         oldTailNode.next = tailNode;
-                        historyMap.put(key, (Task) tailNode);
+                        historyMap.put(key, (V) tailNode);
                         tail = tailNode;
                         return;
                     }
                 }
 
             } else if (existingNode == head) {
-                Node<Task> nextExistingNode = existingNode.next;
+                Node<V> nextExistingNode = existingNode.next;
                 historyMap.remove(key);
                 head = nextExistingNode;
                 nextExistingNode.prev = null;
-                for (Task node : historyMap.values()) {
-                    Node<Task> oldTailNode = (Node<Task>) node;
+                for (V node : historyMap.values()) {
+                    Node<V> oldTailNode = (Node<V>) node;
                     if (oldTailNode.next == null) {
-                        Node<Task> tailNode = new Node<>(oldTailNode, value, null);
+                        Node<V> tailNode = new Node<>(oldTailNode, value, null);
                         oldTailNode.next = tailNode;
-                        historyMap.put(key, (Task) tailNode);
+                        historyMap.put(key, (V) tailNode);
                         tail = tailNode;
                         return;
                     }
                 }
             } else if (existingNode == tail) {
-                Node<Task> prevExistingNode = existingNode.prev;
+                Node<V> prevExistingNode = existingNode.prev;
                 historyMap.remove(key);
-                Node<Task> tailNode = new Node<>(prevExistingNode, value, null);
+                Node<V> tailNode = new Node<>(prevExistingNode, value, null);
                 prevExistingNode.next = tailNode;
-                historyMap.put(key, (Task) tailNode);
+                historyMap.put(key, (V) tailNode);
                 tail = tailNode;
 
             }
         }
     }
 
-    public List<Task> printHistoryMap() {
-        List<Task> historyList = new LinkedList<>();
+    public List<V> printHistoryMap() {
+        List<V> historyList = new LinkedList<>();
         historyList.add(head.task);
         while (historyList.size() != historyMap.size()) {
-            for (Task node : historyMap.values()) {
-                Task lastNode = historyList.getLast();
-                Node<Task> newNode = (Node<Task>) node;
-                Node<Task> prevNewNode = newNode.prev;
+            for (V node : historyMap.values()) {
+                V lastNode = historyList.getLast();
+                Node<V> newNode = (Node<V>) node;
+                Node<V> prevNewNode = newNode.prev;
                 if (newNode.prev != null && prevNewNode.task.equals(lastNode)) {
                     historyList.add(newNode.task);
                 }
@@ -94,22 +94,22 @@ public class HistoryMap<Integer, Task> {
         return historyList;
     }
 
-    public void removeFromHistory(Integer key) {
+    public void removeFromHistory(K key) {
         if (historyMap.containsKey(key)) {
-            Node<Task> deletedNode = (Node<Task>) historyMap.get(key);
+            Node<V> deletedNode = (Node<V>) historyMap.get(key);
             if (deletedNode != head && deletedNode != tail) {
-                Node<Task> prevDeletedNode = deletedNode.prev;
-                Node<Task> nextDeletedNode = deletedNode.next;
+                Node<V> prevDeletedNode = deletedNode.prev;
+                Node<V> nextDeletedNode = deletedNode.next;
                 historyMap.remove(key);
                 prevDeletedNode.next = nextDeletedNode;
                 nextDeletedNode.prev = prevDeletedNode;
             } else if (deletedNode == head) {
-                Node<Task> nextDeletedNode = deletedNode.next;
+                Node<V> nextDeletedNode = deletedNode.next;
                 historyMap.remove(key);
                 head = nextDeletedNode;
                 nextDeletedNode.prev = null;
             } else if (deletedNode == tail) {
-                Node<Task> prevDeletedNode = deletedNode.prev;
+                Node<V> prevDeletedNode = deletedNode.prev;
                 historyMap.remove(key);
                 tail = prevDeletedNode;
                 prevDeletedNode.next = null;
