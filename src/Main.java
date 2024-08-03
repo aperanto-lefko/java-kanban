@@ -13,7 +13,7 @@ public class Main {
         taskManager.add(buyingJam);
         System.out.println("Список задач");
         taskManager.printTask();
-        taskManager.searchTaskById(2);
+
         Task buyingJamNew = new Task("Купить варенье", "Малиновое", 2, TaskStatus.IN_PROGRESS);
         taskManager.update(buyingJamNew);
         System.out.println("Обновленный список задач");
@@ -57,6 +57,16 @@ public class Main {
         taskManager.printEpic();
         taskManager.searchTaskById(2);
         taskManager.searchEpicById(7);
+        taskManager.searchSubtaskById(8);
+        taskManager.printHistory();
+
+        taskManager.searchSubtaskById(8);
+        taskManager.searchEpicById(7);
+        taskManager.searchTaskById(2);
+        System.out.println("Проверка удаления");
+
+        taskManager.searchEpicById(7);
+        taskManager.searchTaskById(2);
         taskManager.searchSubtaskById(8);
         taskManager.printHistory();
 

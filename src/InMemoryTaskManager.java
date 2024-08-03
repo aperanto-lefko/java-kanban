@@ -118,6 +118,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!taskList.isEmpty()) {
             System.out.println("Задача с id " + idNumber + ": " + taskList.get(idNumber));
             history.add(taskList.get(idNumber));
+
             return taskList.get(idNumber);
         } else {
             System.out.println("Список задач пуст");
@@ -213,6 +214,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeTaskById(int idNumber) {
         if (!taskList.isEmpty()) {
             taskList.remove(idNumber);
+            history.remove(idNumber); //новая строка удаляем из истории просмотра
             System.out.println("Задача с id " + idNumber + ": " + "удалена");
 
         } else {
@@ -222,14 +224,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeSubtaskById(int idNumber) {
-        Subtask removeSubtask = subtaskList.get(idNumber);
-        Epic epic = epicList.get(removeSubtask.getEpicId());
-        int index = epic.getSubtaskId().indexOf(idNumber);
+        Subtask removeSubtask = subtaskList.get(idNumber); //получаем из общего списка подзадачу
+        Epic epic = epicList.get(removeSubtask.getEpicId()); //получаем сначала номер эпика, затем сам эпик
+        int index = epic.getSubtaskId().indexOf(idNumber); //берем индекс в списке номеров подзадач
         if (!subtaskList.isEmpty()) {
-            List<Integer> subtaskIdUpdated = epic.getSubtaskId();
-            subtaskIdUpdated.remove(index);
-            epic.setSubtaskId(subtaskIdUpdated);
-            subtaskList.remove(idNumber);
+            List<Integer> subtaskIdUpdated = epic.getSubtaskId(); //берем список подзадач конкретного эпика
+            subtaskIdUpdated.remove(index); //по индексу удаляем подзадачу
+            epic.setSubtaskId(subtaskIdUpdated); //сохраняем новый список подзадач
+            subtaskList.remove(idNumber); //удаляем дополнительно из общего списка подзадач подзадачу с id-номером
+            history.remove(idNumber); //новая строка удаляем из истории просмотра
             System.out.println("Подзадача с id " + idNumber + ": " + "удалена");
             epic.setTaskStatus(checkingEpicStatus(epic));
         } else {
@@ -241,6 +244,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeEpicById(int idNumber) {
         if (!epicList.isEmpty()) {
             epicList.remove(idNumber);
+            history.remove(idNumber); //новая строка удаляем из истории просмотра
             System.out.println("Эпик с id " + idNumber + ": " + "удалена");
 
         } else {
