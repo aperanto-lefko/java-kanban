@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    //private HistoryMap historyMap = new HistoryMap();
 
     public Map<Integer, Node<Task>> historyMap = new HashMap<>();
 
