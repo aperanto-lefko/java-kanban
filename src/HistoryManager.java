@@ -10,5 +10,10 @@ public interface HistoryManager {
 
     void printHistory();
 
+    void put(Integer key, Task value);
+
+    List<Task> printHistoryMap();
+
+    void removeFromHistory(Integer key);
 
 }
