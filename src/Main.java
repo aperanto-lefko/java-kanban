@@ -1,11 +1,13 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ManagerSaveException {
         Managers manager = new Managers();
-        TaskManager taskManager = manager.getDefault();
+        /*TaskManager taskManager = manager.getDefault();
         HistoryManager historyManager = manager.getDefaultHistory();
+
 
         Task buyingCoffee = new Task("Купить кофе", "Зерновой", TaskStatus.NEW);
         Task buyingJam = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
@@ -70,6 +72,21 @@ public class Main {
         taskManager.searchSubtaskById(8);
 
         taskManager.printHistory();
+*/
+        FileBackedTaskManager taskManagerWithFile = manager.managerWithFile();
+        Task buyingJamDouble = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
+        Task buyingCoffeeDouble = new Task("Купить кофе", "Зерновой", TaskStatus.NEW);
+        Task buyingJamThrouble = new Task("Купить мяч", "Резиновый", TaskStatus.NEW);
+        taskManagerWithFile.add(buyingJamDouble);
+        taskManagerWithFile.add(buyingCoffeeDouble);
+        taskManagerWithFile.add(buyingJamThrouble);
+        Epic playingTennis = new Epic("Игра в теннис", "Начало в 19.00", TaskStatus.NEW);
+        taskManagerWithFile.add(playingTennis);
+
+        Subtask racketSelection = new Subtask("Выбор ракетки", "Бренд Wilson", TaskStatus.IN_PROGRESS, playingTennis.getTaskId());
+        taskManagerWithFile.add(racketSelection);
+        Task buyingJamNew = new Task("Купить варенье", "Вишневое", buyingJamDouble.getTaskId(), TaskStatus.IN_PROGRESS);
+        taskManagerWithFile.update(buyingJamNew);
 
     }
 }
