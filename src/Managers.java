@@ -6,10 +6,11 @@ public class Managers {
         return new InMemoryTaskManager();
     }
 
-    public FileBackedTaskManager managerWithFile() throws IOException {
-        File file = new File("fileBacked.csv");
+    public FileBackedTaskManager managerWithFile(File file) {
+
         return new FileBackedTaskManager(file);
     }
+
 
     public HistoryManager getDefaultHistory() {
 

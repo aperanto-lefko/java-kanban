@@ -1,8 +1,5 @@
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +70,56 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             subtasks.add(subtaskForWrite);
         }
         return subtasks;
+    }
+
+    public static FileBackedTaskManager loadFromFile(File file) {
+        Managers manager = new Managers();
+        FileBackedTaskManager taskManager = manager.managerWithFile(file);
+        try (FileReader reader = new FileReader(file)) {
+            BufferedReader br = new BufferedReader(reader);
+            List<String> tasksList = new ArrayList<>();
+            while (br.ready()) {
+                String line = br.readLine();
+                tasksList.add(line);
+            }
+            tasksList.remove("id,type,name,status,description,epic ");
+            for (String string : tasksList) {
+                System.out.println("Проверка списка" + string);
+                String[] tasksLine = string.split(",");
+                TaskStatus status = null;
+                String taskStatus = tasksLine[3]; //определение статуса
+                switch (taskStatus) {
+                    case "NEW":
+                        status = TaskStatus.NEW;
+                        break;
+                    case "IN_PROGRESS":
+                        status = TaskStatus.IN_PROGRESS;
+                        break;
+                    case "DONE":
+                        status = TaskStatus.DONE;
+                        break;
+                }
+                for (String value : tasksLine) {
+                    switch (value) {
+                        case "TASK":
+                            Task task = new Task(tasksLine[2], tasksLine[4], status);
+                            taskManager.add(task);
+                            break;
+                        case "EPIC":
+                            Epic epic = new Epic(tasksLine[2], tasksLine[4], status);
+                            taskManager.add(epic);
+                            break;
+                        case "SUBTASK":
+                            int epicId = Integer.parseInt(tasksLine[5]);
+                            Subtask subtask = new Subtask(tasksLine[2], tasksLine[4], status, epicId);
+                            taskManager.add(subtask);
+                    }
+                }
+            }
+            return taskManager;
+        } catch (IOException e) {
+            throw new ManagerSaveException();
+        }
     }
 
     @Override

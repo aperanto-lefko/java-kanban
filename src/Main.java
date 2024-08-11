@@ -1,14 +1,15 @@
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ManagerSaveException {
+    public static void main(String[] args)  {
         Managers manager = new Managers();
-        /*TaskManager taskManager = manager.getDefault();
+        TaskManager taskManager = manager.getDefault();
         HistoryManager historyManager = manager.getDefaultHistory();
 
-
+/*
         Task buyingCoffee = new Task("Купить кофе", "Зерновой", TaskStatus.NEW);
         Task buyingJam = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
         taskManager.add(buyingCoffee);
@@ -73,7 +74,9 @@ public class Main {
 
         taskManager.printHistory();
 */
-        FileBackedTaskManager taskManagerWithFile = manager.managerWithFile();
+        File file = new File("fileBacked.csv");
+
+        FileBackedTaskManager taskManagerWithFile = manager.managerWithFile(file);
         Task buyingJamDouble = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
         Task buyingCoffeeDouble = new Task("Купить кофе", "Зерновой", TaskStatus.NEW);
         Task buyingJamThrouble = new Task("Купить мяч", "Резиновый", TaskStatus.NEW);
@@ -87,6 +90,8 @@ public class Main {
         taskManagerWithFile.add(racketSelection);
         Task buyingJamNew = new Task("Купить варенье", "Вишневое", buyingJamDouble.getTaskId(), TaskStatus.IN_PROGRESS);
         taskManagerWithFile.update(buyingJamNew);
+        //Работа с существующим файлом
+        //FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
 
     }
 }
