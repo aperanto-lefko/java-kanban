@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +8,7 @@ public class Main {
         TaskManager taskManager = manager.getDefault();
         HistoryManager historyManager = manager.getDefaultHistory();
 
-/*
+
         Task buyingCoffee = new Task("Купить кофе", "Зерновой", TaskStatus.NEW);
         Task buyingJam = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
         taskManager.add(buyingCoffee);
@@ -73,7 +72,7 @@ public class Main {
         taskManager.searchSubtaskById(8);
 
         taskManager.printHistory();
-*/
+
         File file = new File("fileBacked.csv");
 
         FileBackedTaskManager taskManagerWithFile = manager.managerWithFile(file);
@@ -83,13 +82,13 @@ public class Main {
         taskManagerWithFile.add(buyingJamDouble);
         taskManagerWithFile.add(buyingCoffeeDouble);
         taskManagerWithFile.add(buyingJamThrouble);
-        Epic playingTennis = new Epic("Игра в теннис", "Начало в 19.00", TaskStatus.NEW);
-        taskManagerWithFile.add(playingTennis);
+        Epic playingTennisDouble = new Epic("Игра в теннис", "Начало в 19.00", TaskStatus.NEW);
+        taskManagerWithFile.add(playingTennisDouble);
 
-        Subtask racketSelection = new Subtask("Выбор ракетки", "Бренд Wilson", TaskStatus.IN_PROGRESS, playingTennis.getTaskId());
-        taskManagerWithFile.add(racketSelection);
-        Task buyingJamNew = new Task("Купить варенье", "Вишневое", buyingJamDouble.getTaskId(), TaskStatus.IN_PROGRESS);
-        taskManagerWithFile.update(buyingJamNew);
+        Subtask racketSelectionDouble = new Subtask("Выбор ракетки", "Бренд Wilson", TaskStatus.IN_PROGRESS, playingTennisDouble.getTaskId());
+        taskManagerWithFile.add(racketSelectionDouble);
+        Task buyingJamNewDouble = new Task("Купить варенье", "Вишневое", buyingJamDouble.getTaskId(), TaskStatus.IN_PROGRESS);
+        taskManagerWithFile.update(buyingJamNewDouble);
         //Работа с существующим файлом
         //FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
 
