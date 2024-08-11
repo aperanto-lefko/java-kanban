@@ -72,8 +72,10 @@ public class FileBackedTaskManagerTest {
 
     @Test
     void checkingUploadFromFile() { //проверка выгрузки из файла
-        FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(tempFile);
-        Map<Integer, Task> taskMap = taskManager.getTaskList();
+        Task buyingJam = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
+        taskManager.add(buyingJam);
+        FileBackedTaskManager taskManagerDouble = FileBackedTaskManager.loadFromFile(tempFile);
+        Map<Integer, Task> taskMap = taskManagerDouble.getTaskList();
         Task task = taskMap.get(1);
         String taskName = task.getTaskName();
         Assertions.assertEquals("Купить варенье", taskName, "Задача не добавлена или добавлена неверно");
