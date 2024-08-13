@@ -1,6 +1,9 @@
-import java.util.Objects;
+package taskstype;
 
-class Task {
+import java.util.Objects;
+import enumlists.TaskStatus;
+
+public class Task {
 
 
 
@@ -13,13 +16,13 @@ class Task {
 
 
 
-    Task(String taskName, String taskDescription, TaskStatus taskStatus) {
+    public Task(String taskName, String taskDescription, TaskStatus taskStatus) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = taskStatus;
     }
 
-    Task(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus) {
+    public Task(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskId = idNumber;

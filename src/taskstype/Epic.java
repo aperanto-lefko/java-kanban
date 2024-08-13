@@ -1,7 +1,10 @@
+package taskstype;
+
 import java.util.ArrayList;
 import java.util.List;
+import enumlists.TaskStatus;
 
-class Epic extends Task {
+public class Epic extends Task {
 
 
     private List<Integer> subtaskId; //список номеров подзадач

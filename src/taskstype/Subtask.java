@@ -1,4 +1,7 @@
-class Subtask extends Task {
+package taskstype;
+import enumlists.TaskStatus;
+
+public class Subtask extends Task {
 
 
     private int epicId; //номер эпика

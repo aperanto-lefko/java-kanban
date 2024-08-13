@@ -1,7 +1,13 @@
+package managers;
+
+import taskstype.Node;
+import taskstype.Task;
+
 import java.util.List;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
 
 public class InMemoryHistoryManager implements HistoryManager {
 

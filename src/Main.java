@@ -1,3 +1,11 @@
+import enumlists.TaskStatus;
+import managers.HistoryManager;
+import managers.Managers;
+import managers.TaskManager;
+import taskstype.Epic;
+import taskstype.Subtask;
+import taskstype.Task;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +98,7 @@ public class Main {
         Task buyingJamNewDouble = new Task("Купить варенье", "Вишневое", buyingJamDouble.getTaskId(), TaskStatus.IN_PROGRESS);
         taskManagerWithFile.update(buyingJamNewDouble);
         //Работа с существующим файлом
-        //FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
+        FileBackedTaskManager taskManager2 = FileBackedTaskManager.loadFromFile(file);
 
     }
 }
