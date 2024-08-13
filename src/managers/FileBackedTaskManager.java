@@ -1,8 +1,8 @@
+package managers;
+
 import enumlists.TaskStatus;
 import enumlists.TaskType;
 import exceptions.ManagerSaveException;
-import managers.InMemoryTaskManager;
-import managers.Managers;
 import taskstype.Epic;
 import taskstype.Subtask;
 import taskstype.Task;
@@ -17,14 +17,14 @@ import java.util.Map;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     File fileForWrite;
-
+    final String NAME_LIST = String.format("id,type,name,status,description,epic %n");
     public FileBackedTaskManager(File fileForWrite) {
         this.fileForWrite = fileForWrite;
     }
 
     public void save() {
         try (Writer listOfActions = new FileWriter(fileForWrite)) {
-            listOfActions.write(String.format("id,type,name,status,description,epic %n"));
+            listOfActions.write(NAME_LIST);
             if (!super.getTaskList().isEmpty() || !super.getEpicList().isEmpty() || !super.getSubtaskList().isEmpty()) {
                 List<String> tasks = taskToString();
                 for (String task : tasks) {
@@ -108,20 +108,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         status = TaskStatus.DONE;
                         break;
                 }
+                int id = Integer.parseInt(tasksLine[0]);
                 for (String value : tasksLine) {
                     switch (value) {
                         case "TASK":
-                            Task task = new Task(tasksLine[2], tasksLine[4], status);
-                            taskManager.add(task);
+                            Task task = new Task(tasksLine[2], tasksLine[4], id, status);
+                            taskManager.addWithId(task);
                             break;
                         case "EPIC":
-                            Epic epic = new Epic(tasksLine[2], tasksLine[4], status);
-                            taskManager.add(epic);
+                            Epic epic = new Epic(tasksLine[2], tasksLine[4], id, status);
+                            taskManager.addWithId(epic);
                             break;
                         case "SUBTASK":
                             int epicId = Integer.parseInt(tasksLine[5]);
-                            Subtask subtask = new Subtask(tasksLine[2], tasksLine[4], status, epicId);
-                            taskManager.add(subtask);
+                            Subtask subtask = new Subtask(tasksLine[2], tasksLine[4], id, status, epicId);
+                            taskManager.addWithId(subtask);
                     }
                 }
             }
@@ -136,15 +137,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.add(newTask);
         save();
     }
+    @Override
+    public void addWithId(Task newTask) {
+        super.add(newTask);
+        save();
+    }
 
     @Override
     public void add(Subtask newSubtask) {
         super.add(newSubtask);
         save();
     }
+    @Override
+    public void addWithId(Subtask newSubtask) {
+        super.add(newSubtask);
+        save();
+    }
 
     @Override
     public void add(Epic newEpic) {
+        super.add(newEpic);
+        save();
+    }
+    @Override
+    public void addWithId(Epic newEpic) {
         super.add(newEpic);
         save();
     }

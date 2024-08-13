@@ -1,4 +1,7 @@
+package main;
+
 import enumlists.TaskStatus;
+import managers.FileBackedTaskManager;
 import managers.HistoryManager;
 import managers.Managers;
 import managers.TaskManager;
@@ -99,6 +102,11 @@ public class Main {
         taskManagerWithFile.update(buyingJamNewDouble);
         //Работа с существующим файлом
         FileBackedTaskManager taskManager2 = FileBackedTaskManager.loadFromFile(file);
-
+        System.out.println("Проверка добавления задач");
+        taskManager2.printTask();
+        System.out.println("Проверка добавления эпика");
+        taskManager2.printEpic();
+        System.out.println("Проверка добавления подзадач");
+        taskManager2.printSubtask();
     }
 }
