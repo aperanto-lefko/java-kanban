@@ -73,8 +73,9 @@ public class InMemoryTaskManager implements TaskManager {
         generateNextId();
         epicList.put(newEpic.getTaskId(), newEpic);
     }
+
     @Override
-    public void addWithId (Epic newEpic) {
+    public void addWithId(Epic newEpic) {
         epicList.put(newEpic.getTaskId(), newEpic);
     }
 
