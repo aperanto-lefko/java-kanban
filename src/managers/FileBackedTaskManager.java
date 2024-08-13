@@ -17,14 +17,15 @@ import java.util.Map;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     File fileForWrite;
-    final String NAME_LIST = String.format("id,type,name,status,description,epic %n");
+    final String nameList = String.format("id,type,name,status,description,epic %n");
+
     public FileBackedTaskManager(File fileForWrite) {
         this.fileForWrite = fileForWrite;
     }
 
     public void save() {
         try (Writer listOfActions = new FileWriter(fileForWrite)) {
-            listOfActions.write(NAME_LIST);
+            listOfActions.write(nameList);
             if (!super.getTaskList().isEmpty() || !super.getEpicList().isEmpty() || !super.getSubtaskList().isEmpty()) {
                 List<String> tasks = taskToString();
                 for (String task : tasks) {
@@ -137,6 +138,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.add(newTask);
         save();
     }
+
     @Override
     public void addWithId(Task newTask) {
         super.add(newTask);
@@ -148,6 +150,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.add(newSubtask);
         save();
     }
+
     @Override
     public void addWithId(Subtask newSubtask) {
         super.add(newSubtask);
@@ -159,6 +162,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.add(newEpic);
         save();
     }
+
     @Override
     public void addWithId(Epic newEpic) {
         super.add(newEpic);
