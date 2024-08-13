@@ -10,6 +10,7 @@ import java.util.Map;
 
 public interface TaskManager {
     void add(Task newTask);
+
     void addWithId(Task newTask);
 
     void add(Subtask newSubtask);
@@ -18,7 +19,7 @@ public interface TaskManager {
 
     void add(Epic newEpic);
 
-    void addWithId (Epic newEpic);
+    void addWithId(Epic newEpic);
 
     void printTask();
 
