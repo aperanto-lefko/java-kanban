@@ -17,7 +17,7 @@ import java.util.Map;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     File fileForWrite;
-    public static final String NAME_LIST = String.format("id,type,name,status,description,epic \n" );
+    public static final String NAME_LIST = String.format("id,type,name,status,description,epic \n");
 
     public FileBackedTaskManager(File fileForWrite) {
         this.fileForWrite = fileForWrite;
