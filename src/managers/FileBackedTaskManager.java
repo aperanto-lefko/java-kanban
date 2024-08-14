@@ -17,7 +17,7 @@ import java.util.Map;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     File fileForWrite;
-    final String nameList = String.format("id,type,name,status,description,epic %n");
+    public static final String NAME_LIST = String.format("id,type,name,status,description,epic \n" );
 
     public FileBackedTaskManager(File fileForWrite) {
         this.fileForWrite = fileForWrite;
@@ -25,19 +25,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         try (Writer listOfActions = new FileWriter(fileForWrite)) {
-            listOfActions.write(nameList);
+            listOfActions.write(NAME_LIST);
             if (!super.getTaskList().isEmpty() || !super.getEpicList().isEmpty() || !super.getSubtaskList().isEmpty()) {
                 List<String> tasks = taskToString();
                 for (String task : tasks) {
-                    listOfActions.write(String.format(task + "%n"));
+                    listOfActions.write(String.format(task + "\n"));
                 }
                 List<String> epics = epicToString();
                 for (String epic : epics) {
-                    listOfActions.write(String.format(epic + "%n"));
+                    listOfActions.write(String.format(epic + "\n"));
                 }
                 List<String> subtasks = subtaskToString();
                 for (String subtask : subtasks) {
-                    listOfActions.write(String.format(subtask + "%n"));
+                    listOfActions.write(String.format(subtask + "\n"));
                 }
             }
         } catch (IOException e) {
@@ -94,7 +94,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             tasksList.remove("id,type,name,status,description,epic ");
             for (String string : tasksList) {
-                System.out.println("Проверка списка" + string);
                 String[] tasksLine = string.split(",");
                 TaskStatus status = null;
                 String taskStatus = tasksLine[3]; //определение статуса
