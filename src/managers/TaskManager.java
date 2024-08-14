@@ -1,12 +1,25 @@
+package managers;
+
+import taskstype.Epic;
+import taskstype.Subtask;
+import taskstype.Task;
+import enumlists.TaskStatus;
+
 import java.util.List;
 import java.util.Map;
 
 public interface TaskManager {
     void add(Task newTask);
 
+    void addWithId(Task newTask);
+
     void add(Subtask newSubtask);
 
+    void addWithId(Subtask newSubtask);
+
     void add(Epic newEpic);
+
+    void addWithId(Epic newEpic);
 
     void printTask();
 

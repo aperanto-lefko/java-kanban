@@ -1,3 +1,10 @@
+package managers;
+
+import taskstype.Epic;
+import taskstype.Subtask;
+import taskstype.Task;
+import enumlists.TaskStatus;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +25,7 @@ public class InMemoryTaskManager implements TaskManager {
     HistoryManager history = manager.getDefaultHistory();
 
 
-    private void generateNextId() {
+    public void generateNextId() {
         id++;
     }
 
@@ -28,6 +35,12 @@ public class InMemoryTaskManager implements TaskManager {
         generateNextId();
         taskList.put(newTask.getTaskId(), newTask);
     }
+
+    @Override
+    public void addWithId(Task newTask) {
+        taskList.put(newTask.getTaskId(), newTask);
+    }
+
 
     @Override
     public void add(Subtask newSubtask) {
@@ -43,11 +56,29 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public void addWithId(Subtask newSubtask) {
+
+        subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
+        Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
+        List<Integer> subtaskIdUpdated = epic.getSubtaskId();
+        subtaskIdUpdated.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
+        epic.setSubtaskId(subtaskIdUpdated);
+        epic.setTaskStatus(checkingEpicStatus(epic));
+    }
+
+
+    @Override
     public void add(Epic newEpic) {
         newEpic.setTaskId(id);
         generateNextId();
         epicList.put(newEpic.getTaskId(), newEpic);
     }
+
+    @Override
+    public void addWithId(Epic newEpic) {
+        epicList.put(newEpic.getTaskId(), newEpic);
+    }
+
 
     @Override
     public void printTask() {
