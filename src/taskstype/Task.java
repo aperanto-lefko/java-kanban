@@ -1,10 +1,13 @@
 package taskstype;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+
 import enumlists.TaskStatus;
 
 public class Task {
-
 
 
     private final String taskName;
@@ -15,11 +18,26 @@ public class Task {
 
 
 
+    private Duration duration;
+
+
+    private LocalDateTime startTime;
+
+
+
 
     public Task(String taskName, String taskDescription, TaskStatus taskStatus) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = taskStatus;
+    }
+
+    public Task(String taskName, String taskDescription, TaskStatus taskStatus, Duration duration, LocalDateTime startTime) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskStatus = taskStatus;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public Task(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus) {
@@ -28,6 +46,23 @@ public class Task {
         this.taskId = idNumber;
         this.taskStatus = taskStatus;
     }
+
+    public Task(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus, Duration duration, LocalDateTime startTime) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskId = idNumber;
+        this.taskStatus = taskStatus;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+    public Task(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus, LocalDateTime startTime) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskId = idNumber;
+        this.taskStatus = taskStatus;
+        this.startTime = startTime;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -49,6 +84,7 @@ public class Task {
                 ", описание='" + taskDescription + '\'' +
                 ", id=" + taskId +
                 ", статус =" + taskStatus +
+                ", старт =" + startTime +
                 '}';
     }
 
@@ -75,7 +111,35 @@ public class Task {
     public String getTaskDescription() {
         return taskDescription;
     }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (checkStartTime()) {
+            return startTime.plus(duration);
+        } else return null;
+    }
+
+    public  LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public boolean checkStartTime() {
+        return startTime != null;
+
+
+    }
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
 }
+
 
 
 

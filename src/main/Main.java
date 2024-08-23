@@ -10,6 +10,8 @@ import taskstype.Subtask;
 import taskstype.Task;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class Main {
         TaskManager taskManager = manager.getDefault();
         HistoryManager historyManager = manager.getDefaultHistory();
 
-
+/*
         Task buyingCoffee = new Task("Купить кофе", "Зерновой", TaskStatus.NEW);
         Task buyingJam = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
         taskManager.add(buyingCoffee);
@@ -84,7 +86,7 @@ public class Main {
 
         taskManager.printHistory();
 
-        File file = new File("fileBacked.csv");
+       File file = new File("fileBacked.csv");
 
         FileBackedTaskManager taskManagerWithFile = manager.managerWithFile(file);
         Task buyingJamDouble = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
@@ -100,13 +102,51 @@ public class Main {
         taskManagerWithFile.add(racketSelectionDouble);
         Task buyingJamNewDouble = new Task("Купить варенье", "Вишневое", buyingJamDouble.getTaskId(), TaskStatus.IN_PROGRESS);
         taskManagerWithFile.update(buyingJamNewDouble);
-        //Работа с существующим файлом
-        FileBackedTaskManager taskManager2 = FileBackedTaskManager.loadFromFile(file);
+        */
+
+
+        //Проверка задач с временем
+        File file = new File("fileBacked.csv");
+
+        FileBackedTaskManager taskManagerWithFile = manager.managerWithFile(file);
+        Task laptop = new Task("Купить ноутбук", "Фирма Sony", TaskStatus.NEW, Duration.ofMinutes(10),
+                LocalDateTime.of(2024, 9, 15, 9, 00));
+        taskManagerWithFile.add(laptop);
+        Epic food = new Epic("Купить продукты", "По списку продуктов", TaskStatus.NEW);
+        taskManagerWithFile.add(food);
+
+        Subtask store = new Subtask("Выбор магазина", "Магазин около дома", TaskStatus.NEW, food.getTaskId(),
+                Duration.ofMinutes(20), LocalDateTime.of(2024, 8, 21, 12, 24 ));
+        taskManagerWithFile.add(store);
+
+
+        Subtask list = new Subtask("Список продуктов", "Молоко хлеб", TaskStatus.NEW, food.getTaskId(),
+                Duration.ofMinutes(10), LocalDateTime.of(2024, 8, 22, 13, 00 ));
+        taskManagerWithFile.add(list);
+
+
+        Subtask catFood = new Subtask("Корм для кота", "Корм для толстых котов", TaskStatus.NEW,food.getTaskId());
+
+        taskManagerWithFile.add(catFood);
+        Task buyingCoffee = new Task("Купить кофе", "Зерновой", TaskStatus.NEW);
+        taskManagerWithFile.add(buyingCoffee);
+
+
+        //Работа с существующим файлом*/
+       /* File file = new File("fileBacked.csv");*/
+
+       /*  FileBackedTaskManager taskManager2 = FileBackedTaskManager.loadFromFile(file);
         System.out.println("Проверка добавления задач");
         taskManager2.printTask();
         System.out.println("Проверка добавления эпика");
         taskManager2.printEpic();
         System.out.println("Проверка добавления подзадач");
-        taskManager2.printSubtask();
+        taskManager2.printSubtask();*/
+
+
+        System.out.println("Печать отсортированного списка" + taskManagerWithFile.getPrioritizedTasks());
+
+
+
     }
 }

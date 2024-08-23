@@ -5,6 +5,7 @@ import taskstype.Subtask;
 import taskstype.Task;
 import enumlists.TaskStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -65,5 +66,9 @@ public interface TaskManager {
     void printHistory();
 
     List<Task> getHistory();
+
+    LocalDateTime startEpicTime(Epic epic);
+
+   LocalDateTime endEpicTime(Epic epic);
 
 }
