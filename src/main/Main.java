@@ -2,7 +2,6 @@ package main;
 
 import enumlists.TaskStatus;
 import managers.FileBackedTaskManager;
-import managers.HistoryManager;
 import managers.Managers;
 import managers.TaskManager;
 import taskstype.Epic;
@@ -46,7 +45,7 @@ public class Main {
 
         FileBackedTaskManager taskManagerWithFile = manager.managerWithFile(file);
         Task laptop = new Task("Купить ноутбук", "Фирма Sony", TaskStatus.NEW, Duration.ofMinutes(20),
-                LocalDateTime.of(2024, 9, 15, 9, 00));
+                LocalDateTime.of(2024, 9, 15, 9, 0));
         taskManagerWithFile.add(laptop);
         Task pc = new Task("Купить компьютер", "Фирма Philips", TaskStatus.NEW, Duration.ofMinutes(20),
                 LocalDateTime.of(2024, 10, 15, 9, 50));
@@ -55,11 +54,11 @@ public class Main {
         taskManagerWithFile.add(food);
 
         Subtask store = new Subtask("Выбор магазина", "Магазин около дома", TaskStatus.NEW, food.getTaskId(),
-                Duration.ofMinutes(20), LocalDateTime.of(2024, 9, 15, 9, 15 ));
+                Duration.ofMinutes(20), LocalDateTime.of(2024, 9, 15, 9, 15));
         taskManagerWithFile.add(store);
 
         Subtask list = new Subtask("Список продуктов", "Молоко хлеб", TaskStatus.NEW, food.getTaskId(),
-                Duration.ofMinutes(10), LocalDateTime.of(2024, 8, 22, 13, 00 ));
+                Duration.ofMinutes(10), LocalDateTime.of(2024, 8, 22, 13, 0));
         taskManagerWithFile.add(list);
 
         //Работа с существующим файлом
