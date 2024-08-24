@@ -54,7 +54,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         for (Integer id : taskList.keySet()) {
             Task task = taskList.get(id);
             String taskForWrite = String.format("%d,%s,%s,%s,%s,%s,%s", task.getTaskId(), TaskType.TASK, task.getTaskName(),
-                    task.getTaskStatus(), task.getTaskDescription(), task.getStartTime(),task.getDuration());
+                    task.getTaskStatus(), task.getTaskDescription(), task.getStartTime(), task.getDuration());
             tasks.add(taskForWrite);
         }
         return tasks;
@@ -79,7 +79,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             Subtask subtask = subtaskList.get(id);
             String subtaskForWrite = String.format("%d,%s,%s,%s,%s,%s,%s,%s", subtask.getTaskId(), TaskType.SUBTASK,
                     subtask.getTaskName(), subtask.getTaskStatus(), subtask.getTaskDescription(), subtask.getEpicId(),
-                    subtask.getStartTime(),subtask.getDuration());
+                    subtask.getStartTime(), subtask.getDuration());
             subtasks.add(subtaskForWrite);
         }
         return subtasks;
@@ -119,28 +119,32 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     switch (value) {
                         case "TASK":
                             if (!tasksLine[5].equals("null")) {
-                               startTime = LocalDateTime.parse(tasksLine[5]);}
+                                startTime = LocalDateTime.parse(tasksLine[5]);
+                            }
                             if (!tasksLine[6].equals("null")) {
-                               duration = Duration.parse(tasksLine[6]);
+                                duration = Duration.parse(tasksLine[6]);
                             }
                             Task task = new Task(tasksLine[2], tasksLine[4], id, status, duration, startTime);
                             taskManager.addWithId(task);
-                            System.out.println("Проверка добавления задачи" + task + "id" + task.getTaskId());
                             break;
                         case "EPIC":
                             LocalDateTime endEpicTime = null;
                             if (!tasksLine[5].equals("null")) {
-                                startTime = LocalDateTime.parse(tasksLine[5]);}
+                                startTime = LocalDateTime.parse(tasksLine[5]);
+                            }
                             if (!tasksLine[6].equals("null")) {
-                            endEpicTime = LocalDateTime.parse(tasksLine[6]);}
+                                endEpicTime = LocalDateTime.parse(tasksLine[6]);
+                            }
                             Epic epic = new Epic(tasksLine[2], tasksLine[4], id, status);
                             taskManager.addWithId(epic);
                             break;
                         case "SUBTASK":
                             if (!tasksLine[6].equals("null")) {
-                            startTime = LocalDateTime.parse(tasksLine[6]);}
+                                startTime = LocalDateTime.parse(tasksLine[6]);
+                            }
                             if (!tasksLine[7].equals("null")) {
-                            duration = Duration.parse(tasksLine[7]);}
+                                duration = Duration.parse(tasksLine[7]);
+                            }
                             int epicId = Integer.parseInt(tasksLine[5]);
                             Subtask subtask = new Subtask(tasksLine[2], tasksLine[4], status, id, epicId, duration, startTime);
                             taskManager.addWithId(subtask);
