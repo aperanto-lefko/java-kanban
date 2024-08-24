@@ -2,7 +2,6 @@ package taskstype;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import enumlists.TaskStatus;
@@ -17,13 +16,10 @@ public class Task {
     private TaskStatus taskStatus;
 
 
-
     private Duration duration;
 
 
     private LocalDateTime startTime;
-
-
 
 
     public Task(String taskName, String taskDescription, TaskStatus taskStatus) {
@@ -55,6 +51,7 @@ public class Task {
         this.duration = duration;
         this.startTime = startTime;
     }
+
     public Task(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus, LocalDateTime startTime) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
@@ -122,15 +119,14 @@ public class Task {
         } else return null;
     }
 
-    public  LocalDateTime getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
     public boolean checkStartTime() {
         return startTime != null;
-
-
     }
+
     public Duration getDuration() {
         return duration;
     }
