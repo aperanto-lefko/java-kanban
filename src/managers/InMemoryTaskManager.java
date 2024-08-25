@@ -5,25 +5,34 @@ import taskstype.Subtask;
 import taskstype.Task;
 import enumlists.TaskStatus;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+
+
 
 public class InMemoryTaskManager implements TaskManager {
 
     private int id = 1;
 
-
     private Map<Integer, Task> taskList = new HashMap<>();
-
 
     private Map<Integer, Subtask> subtaskList = new HashMap<>();
     private Map<Integer, Epic> epicList = new HashMap<>();
 
+    Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
+    private Set<Task> prioritizedTasks = new TreeSet<>(comparator);
 
     Managers manager = new Managers();
     HistoryManager history = manager.getDefaultHistory();
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public void generateNextId() {
         id++;
@@ -31,41 +40,59 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void add(Task newTask) {
-        newTask.setTaskId(id);
-        generateNextId();
-        taskList.put(newTask.getTaskId(), newTask);
+        if (timeOverlayCheck(newTask)) {
+            System.out.println("Есть наложение по времени, задача " + newTask.getTaskName() + " не будет добавлена");
+        } else {
+            newTask.setTaskId(id);
+            generateNextId();
+            taskList.put(newTask.getTaskId(), newTask);
+        }
     }
 
     @Override
     public void addWithId(Task newTask) {
-        taskList.put(newTask.getTaskId(), newTask);
+        if (timeOverlayCheck(newTask)) {
+            System.out.println("Есть наложение по времени, задача " + newTask.getTaskName() + " не будет добавлена");
+        } else {
+            newTask.setTaskId(newTask.getTaskId());
+            taskList.put(newTask.getTaskId(), newTask);
+        }
     }
-
 
     @Override
     public void add(Subtask newSubtask) {
-
-        newSubtask.setTaskId(id);
-        generateNextId();
-        subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
-        Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
-        List<Integer> subtaskIdUpdated = epic.getSubtaskId();
-        subtaskIdUpdated.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
-        epic.setSubtaskId(subtaskIdUpdated);
-        epic.setTaskStatus(checkingEpicStatus(epic));
+        if (timeOverlayCheck(newSubtask)) {
+            System.out.println("Есть наложение по времени, задача " + newSubtask.getTaskName() + " не будет добавлена");
+        } else {
+            newSubtask.setTaskId(id);
+            generateNextId();
+            subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
+            Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
+            List<Integer> subtaskIdUpdated = epic.getSubtaskId();
+            subtaskIdUpdated.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
+            epic.setSubtaskId(subtaskIdUpdated);
+            epic.setTaskStatus(checkingEpicStatus(epic));
+            epic.setStartTime(startEpicTime(epic));
+            epic.setEndEpicTime(endEpicTime(epic));
+        }
     }
 
     @Override
     public void addWithId(Subtask newSubtask) {
-
-        subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
-        Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
-        List<Integer> subtaskIdUpdated = epic.getSubtaskId();
-        subtaskIdUpdated.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
-        epic.setSubtaskId(subtaskIdUpdated);
-        epic.setTaskStatus(checkingEpicStatus(epic));
+        if (timeOverlayCheck(newSubtask)) {
+            System.out.println("Есть наложение по времени, задача " + newSubtask.getTaskName() + " не будет добавлена");
+        } else {
+            newSubtask.setTaskId(newSubtask.getTaskId());
+            subtaskList.put(newSubtask.getTaskId(), newSubtask); //сохраняем в таблицу задачу с ключом id
+            Epic epic = epicList.get(newSubtask.getEpicId()); // берем эпик из мапы с конкретным номером
+            List<Integer> subtaskIdUpdated = epic.getSubtaskId();
+            subtaskIdUpdated.add(newSubtask.getTaskId()); //добавляем номер подзадачи в список подзадач эпика
+            epic.setSubtaskId(subtaskIdUpdated);
+            epic.setTaskStatus(checkingEpicStatus(epic));
+            epic.setStartTime(startEpicTime(epic));
+            epic.setEndEpicTime(endEpicTime(epic));
+        }
     }
-
 
     @Override
     public void add(Epic newEpic) {
@@ -76,44 +103,66 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addWithId(Epic newEpic) {
+        newEpic.setTaskId(newEpic.getTaskId());
         epicList.put(newEpic.getTaskId(), newEpic);
     }
 
-
     @Override
     public void printTask() {
-        if (!taskList.isEmpty()) {
-            for (Integer id : taskList.keySet()) {
-                System.out.println("Задача: идентификационный номер: " + id);
-                System.out.println(taskList.get(id));
-            }
-        } else {
+        if (taskList.isEmpty()) {
             System.out.println("Список задач пуст");
+            return;
+        }
+        for (Integer id : taskList.keySet()) {
+            System.out.println("Задача: идентификационный номер: " + id);
+            System.out.println(taskList.get(id));
+            if (taskList.get(id).getStartTime() != null) {
+                System.out.println("Начало задачи " +
+                        taskList.get(id).getStartTime().format(formatter) + " окончание задачи " +
+                        taskList.get(id).getEndTime().format(formatter));
+            }
         }
     }
 
     @Override
     public void printSubtask() {
-        if (!subtaskList.isEmpty()) {
-            for (Integer id : subtaskList.keySet()) {
-                System.out.println("Подзадача: идентификационный номер: " + id);
-                System.out.println(subtaskList.get(id));
-            }
-        } else {
+        if (subtaskList.isEmpty()) {
             System.out.println("Список подзадач пуст");
+            return;
+        }
+        for (Integer id : subtaskList.keySet()) {
+            System.out.println("Подзадача: идентификационный номер: " + id);
+            System.out.println(subtaskList.get(id));
+            if (subtaskList.get(id).getStartTime() != null) {
+                System.out.println("Начало подзадачи " + subtaskList.get(id).getStartTime().format(formatter) +
+                        " окончание подзадачи " + subtaskList.get(id).getEndTime().format(formatter));
+            }
         }
     }
 
     @Override
     public void printEpic() {
+        if (epicList.isEmpty()) {
+            System.out.println("Список эпиков пуст");
+            return;
+        }
         for (Integer id : epicList.keySet()) {
             System.out.println("Эпик: идентификационный номер: " + id);
             System.out.println("Наименование эпика: " + epicList.get(id));
+            if (epicList.get(id).getStartTime() != null) {
+                System.out.println("Начало эпика " + epicList.get(id).getStartTime().format(formatter) +
+                        " окончание эпика " + epicList.get(id).getEndEpicTime().format(formatter));
+            }
             System.out.println("Список подзадач: ");
             Epic epic = epicList.get(id); // берем эпик из мапы с конкретным номером
             List<Integer> idSubtaskList = epic.getSubtaskId();
             for (int subtaskId : idSubtaskList) {
-                System.out.println(subtaskList.get(subtaskId));
+                if (subtaskList.get(subtaskId).getStartTime() != null) {
+                    System.out.println(subtaskList.get(subtaskId) + "Начало подзадачи " + subtaskList.get(subtaskId).getStartTime().format(formatter) +
+                            " окончание подзадачи " + subtaskList.get(subtaskId).getEndTime().format(formatter));
+                } else {
+                    System.out.println(subtaskList.get(subtaskId));
+                }
             }
         }
     }
@@ -123,10 +172,9 @@ public class InMemoryTaskManager implements TaskManager {
         System.out.println("Наименование эпика: " + epicList.get(idNumber));
         System.out.println("Список подзадач: ");
         Epic epic = epicList.get(idNumber); // берем эпик из мапы с конкретным номером
-        List<Integer> idSubtaskList = epic.getSubtaskId();
-        for (int subtaskId : idSubtaskList) {
-            System.out.println(subtaskList.get(subtaskId));
-        }
+        epic.getSubtaskId().stream()
+                .map(id -> subtaskList.get(id))
+                .forEach(System.out::println);
     }
 
     @Override
@@ -145,62 +193,55 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task searchTaskById(int idNumber) {
-        if (!taskList.isEmpty()) {
-            System.out.println("Задача с id " + idNumber + ": " + taskList.get(idNumber));
-            history.add(taskList.get(idNumber));
-
-            return taskList.get(idNumber);
-        } else {
-            System.out.println("Список задач пуст");
-        }
-        return null;
+    public Task searchTaskById(int id) {
+        Optional<Task> taskForCheking = Optional.ofNullable(taskList.get(id));
+        taskForCheking.ifPresent(task -> history.add(task));
+        return taskForCheking.orElse(null);
     }
 
 
     @Override
-    public Subtask searchSubtaskById(int idNumber) {
-        if (!subtaskList.isEmpty()) {
-            System.out.println("Подзадача с id " + idNumber + ": " + subtaskList.get(idNumber));
-            history.add(subtaskList.get(idNumber));
-            return subtaskList.get(idNumber);
-        } else {
-            System.out.println("Список задач пуст");
-        }
-        return null;
+    public Subtask searchSubtaskById(int id) {
+        Optional<Subtask> subtaskForCheking = Optional.ofNullable(subtaskList.get(id));
+        subtaskForCheking.ifPresent(task -> history.add(task));
+        return subtaskForCheking.orElse(null);
     }
 
     @Override
-    public Epic searchEpicById(int idNumber) {
-        if (!epicList.isEmpty()) {
-            System.out.println("Эпик с id " + idNumber + ": " + epicList.get(idNumber));
-            history.add(epicList.get(idNumber));
-            return epicList.get(idNumber);
-        } else {
-            System.out.println("Список задач пуст");
-        }
-        return null;
+    public Epic searchEpicById(int id) {
+        Optional<Epic> epicForCheking = Optional.ofNullable(epicList.get(id));
+        epicForCheking.ifPresent(task -> history.add(task));
+        return epicForCheking.orElse(null);
+
     }
 
     @Override
     public void update(Task updatedTask) {
-        int updatedTaskId = updatedTask.getTaskId();
-        if (subtaskList.containsKey(updatedTaskId) || epicList.containsKey(updatedTaskId)) { //проверяем, чтобы не было пересечений по id подзадач и эпиков
-            System.out.println("Задача не может быть обновлена с данным id");
+        if (timeOverlayCheck(updatedTask)) {
+            System.out.println("Есть наложение по времени, задача " + updatedTask.getTaskName() + " не будет добавлена");
         } else {
-            taskList.put(updatedTask.getTaskId(), updatedTask);
+            int updatedTaskId = updatedTask.getTaskId();
+            if (subtaskList.containsKey(updatedTaskId) || epicList.containsKey(updatedTaskId)) { //проверяем, чтобы не было пересечений по id подзадач и эпиков
+                System.out.println("Задача не может быть обновлена с данным id");
+            } else {
+                taskList.put(updatedTask.getTaskId(), updatedTask);
+            }
         }
     }
 
     @Override
     public void update(Subtask updatedSubtask) {
-        int updatedSubtaskId = updatedSubtask.getTaskId();
-        if (taskList.containsKey(updatedSubtaskId) || epicList.containsKey(updatedSubtaskId)) {
-            System.out.println("Подзадача не может быть обновлена с данным id");
+        if (timeOverlayCheck(updatedSubtask)) {
+            System.out.println("Есть наложение по времени, задача " + updatedSubtask.getTaskName() + " не будет добавлена");
         } else {
-            subtaskList.put(updatedSubtask.getTaskId(), updatedSubtask); //заменили в хэштаблице обновленную задачу
-            Epic epic = epicList.get(updatedSubtask.getEpicId());
-            epic.setTaskStatus(checkingEpicStatus(epic));
+            int updatedSubtaskId = updatedSubtask.getTaskId();
+            if (taskList.containsKey(updatedSubtaskId) || epicList.containsKey(updatedSubtaskId)) {
+                System.out.println("Подзадача не может быть обновлена с данным id");
+            } else {
+                subtaskList.put(updatedSubtask.getTaskId(), updatedSubtask); //заменили в хэштаблице обновленную задачу
+                Epic epic = epicList.get(updatedSubtask.getEpicId());
+                epic.setTaskStatus(checkingEpicStatus(epic));
+            }
         }
     }
 
@@ -240,6 +281,27 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return taskStatus;
     }
+
+    @Override
+    public LocalDateTime startEpicTime(Epic epic) {
+        return epic.getSubtaskId().stream()
+                .filter(id -> subtaskList.get(id).checkStartTime())
+                .map(id -> subtaskList.get(id))
+                .min(Comparator.comparing(Task::getStartTime))
+                .map(Task::getStartTime)
+                .orElse(null);
+    }
+
+
+    @Override
+    public LocalDateTime endEpicTime(Epic epic) {
+        return epic.getSubtaskId().stream()
+                .filter(id -> subtaskList.get(id).checkStartTime())
+                .map(id -> subtaskList.get(id).getEndTime())
+                .max(LocalDateTime::compareTo)
+                .orElse(null); //вернет LocalDataTime если он не пустой или ноль если пустой
+    }
+
 
     @Override
     public void removeTaskById(int idNumber) {
@@ -306,7 +368,36 @@ public class InMemoryTaskManager implements TaskManager {
         return epicList;
     }
 
+    public Set<Task> getPrioritizedTasks() {
+        if (!taskList.isEmpty()) {
+            for (int i : taskList.keySet()) {
+                if (taskList.get(i).checkStartTime()) {
+                    prioritizedTasks.add(taskList.get(i));
+                }
+            }
+        }
+        if (!subtaskList.isEmpty()) {
+            for (int i : subtaskList.keySet()) {
+                if (subtaskList.get(i).checkStartTime()) {
+                    prioritizedTasks.add(subtaskList.get(i));
+                }
+            }
+        }
 
+        return prioritizedTasks;
+    }
+
+    public boolean timeOverlayCheck(Task taskForCheking) {
+        Set<Task> allTasks = getPrioritizedTasks();
+        if (allTasks.isEmpty() || !taskForCheking.checkStartTime()) {
+            return false;
+        }
+        return allTasks.stream()
+                .filter(Task::checkStartTime)
+                .filter(task -> taskForCheking.getStartTime().isAfter(task.getStartTime()))
+                .anyMatch(task -> taskForCheking.getStartTime().isBefore(task.getEndTime()));
+
+    }
 }
 
 

@@ -1,6 +1,9 @@
 package taskstype;
 import enumlists.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
 
 
@@ -11,13 +14,18 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public Subtask(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus, int epicId) {
-        super(taskName, taskDescription, idNumber, taskStatus);
+    public Subtask(String taskName, String taskDescription, TaskStatus taskStatus, int epicId, Duration duration, LocalDateTime startTime) {
+        super(taskName, taskDescription, taskStatus, duration, startTime);
         this.epicId = epicId;
     }
 
     public Subtask(String taskName, String taskDescription, TaskStatus taskStatus, int idNumber, int epicId) {
         super(taskName, taskDescription, idNumber, taskStatus);
+        this.epicId = epicId;
+    }
+
+    public Subtask(String taskName, String taskDescription, TaskStatus taskStatus, int idNumber, int epicId, Duration duration, LocalDateTime startTime) {
+        super(taskName, taskDescription, idNumber, taskStatus, duration, startTime);
         this.epicId = epicId;
     }
 

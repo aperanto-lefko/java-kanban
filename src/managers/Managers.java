@@ -1,14 +1,9 @@
 package managers;
 
-import managers.InMemoryHistoryManager;
-import managers.InMemoryTaskManager;
-
-
-
 import java.io.*;
 
 public class Managers {
-    public TaskManager getDefault() {
+    public InMemoryTaskManager getDefault() {
 
         return new InMemoryTaskManager();
     }
