@@ -102,38 +102,43 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void printTask() {
-        if (!taskList.isEmpty()) {
-            for (Integer id : taskList.keySet()) {
-                System.out.println("Задача: идентификационный номер: " + id);
-                System.out.println(taskList.get(id));
-                if (taskList.get(id).getStartTime() != null) {
-                    System.out.println("Начало задачи " + taskList.get(id).getStartTime().format(formatter) + " окончание задачи " +
-                            taskList.get(id).getEndTime().format(formatter));
-                }
-            }
-        } else {
+        if (taskList.isEmpty()) {
             System.out.println("Список задач пуст");
+            return;
+        }
+        for (Integer id : taskList.keySet()) {
+            System.out.println("Задача: идентификационный номер: " + id);
+            System.out.println(taskList.get(id));
+            if (taskList.get(id).getStartTime() != null) {
+                System.out.println("Начало задачи " +
+                        taskList.get(id).getStartTime().format(formatter) + " окончание задачи " +
+                        taskList.get(id).getEndTime().format(formatter));
+            }
         }
     }
 
     @Override
     public void printSubtask() {
-        if (!subtaskList.isEmpty()) {
-            for (Integer id : subtaskList.keySet()) {
-                System.out.println("Подзадача: идентификационный номер: " + id);
-                System.out.println(subtaskList.get(id));
-                if (subtaskList.get(id).getStartTime() != null) {
-                    System.out.println("Начало подзадачи " + subtaskList.get(id).getStartTime().format(formatter) +
-                            " окончание подзадачи " + subtaskList.get(id).getEndTime().format(formatter));
-                }
-            }
-        } else {
+        if (subtaskList.isEmpty()) {
             System.out.println("Список подзадач пуст");
+            return;
+        }
+        for (Integer id : subtaskList.keySet()) {
+            System.out.println("Подзадача: идентификационный номер: " + id);
+            System.out.println(subtaskList.get(id));
+            if (subtaskList.get(id).getStartTime() != null) {
+                System.out.println("Начало подзадачи " + subtaskList.get(id).getStartTime().format(formatter) +
+                        " окончание подзадачи " + subtaskList.get(id).getEndTime().format(formatter));
+            }
         }
     }
 
     @Override
     public void printEpic() {
+        if (epicList.isEmpty()) {
+            System.out.println("Список эпиков пуст");
+            return;
+        }
         for (Integer id : epicList.keySet()) {
             System.out.println("Эпик: идентификационный номер: " + id);
             System.out.println("Наименование эпика: " + epicList.get(id));

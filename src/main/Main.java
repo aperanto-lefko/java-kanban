@@ -23,7 +23,6 @@ public class Main {
         Task buyingJam = new Task("Купить варенье", "Малиновое", TaskStatus.NEW);
         taskManager.add(buyingCoffee);
         taskManager.add(buyingJam);
-
         Epic catFood = new Epic("Покормить кота", "Корм для толстых котов и миска", TaskStatus.NEW);
         taskManager.add(catFood);
         Subtask storeSelection = new Subtask("Выбор магазина", "Магазин около дома", TaskStatus.NEW, catFood.getTaskId());
