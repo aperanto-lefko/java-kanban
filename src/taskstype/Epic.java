@@ -3,6 +3,7 @@ package taskstype;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import enumlists.TaskStatus;
 
 public class Epic extends Task {
@@ -17,15 +18,9 @@ public class Epic extends Task {
         subtaskId = new ArrayList<>();
     }
 
-    public Epic(String taskName, String taskDescription,int idNumber, TaskStatus taskStatus) {
-        super(taskName, taskDescription,idNumber, taskStatus);
+    public Epic(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus) {
+        super(taskName, taskDescription, idNumber, taskStatus);
         subtaskId = new ArrayList<>();
-    }
-
-    public Epic(String taskName, String taskDescription,int idNumber, TaskStatus taskStatus, LocalDateTime startTime, LocalDateTime endEpicTime) {
-        super(taskName, taskDescription,idNumber, taskStatus,startTime);
-        subtaskId = new ArrayList<>();
-        this.endEpicTime = endEpicTime;
     }
 
     public Epic(String taskName, String taskDescription, int idNumber, TaskStatus taskStatus, ArrayList<Integer> subtaskId) {

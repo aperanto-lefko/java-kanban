@@ -69,6 +69,6 @@ public interface TaskManager {
 
     LocalDateTime startEpicTime(Epic epic);
 
-   LocalDateTime endEpicTime(Epic epic);
+    LocalDateTime endEpicTime(Epic epic);
 
 }

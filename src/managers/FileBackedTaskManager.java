@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    File fileForWrite;
+    public File fileForWrite;
     public static final String NAME_LIST = String.format("id,type,name,status,description,epic,startTime,duration,endTime \n");
 
     public FileBackedTaskManager(File fileForWrite) {
@@ -110,6 +110,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     case "DONE":
                         status = TaskStatus.DONE;
                         break;
+                    default: break;
                 }
                 int id = Integer.parseInt(tasksLine[0]);
                 LocalDateTime startTime = null;
@@ -149,6 +150,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             Subtask subtask = new Subtask(tasksLine[2], tasksLine[4], status, id, epicId, duration, startTime);
                             taskManager.addWithId(subtask);
                             break;
+                        default: break;
                     }
                 }
             }

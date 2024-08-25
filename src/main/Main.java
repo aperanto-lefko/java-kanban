@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Main {
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         Managers manager = new Managers();
 
         TaskManager taskManager = manager.getDefault();
@@ -54,13 +54,14 @@ public class Main {
         taskManagerWithFile.add(food);
 
         Subtask store = new Subtask("Выбор магазина", "Магазин около дома", TaskStatus.NEW, food.getTaskId(),
-                Duration.ofMinutes(20), LocalDateTime.of(2024, 9, 15, 9, 15));
+                Duration.ofMinutes(20), LocalDateTime.of(2024, 8, 22, 14, 15));
         taskManagerWithFile.add(store);
 
         Subtask list = new Subtask("Список продуктов", "Молоко хлеб", TaskStatus.NEW, food.getTaskId(),
-                Duration.ofMinutes(10), LocalDateTime.of(2024, 8, 22, 13, 0));
+                Duration.ofMinutes(10), LocalDateTime.of(2024, 8, 22, 15, 20));
         taskManagerWithFile.add(list);
 
+        System.out.println("Проверка времени endEpic" + food.getStartTime());
         //Работа с существующим файлом
 
         FileBackedTaskManager taskManager2 = FileBackedTaskManager.loadFromFile(file);

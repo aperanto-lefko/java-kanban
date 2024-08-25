@@ -14,9 +14,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int id = 1;
 
-
     private Map<Integer, Task> taskList = new HashMap<>();
-
 
     private Map<Integer, Subtask> subtaskList = new HashMap<>();
     private Map<Integer, Epic> epicList = new HashMap<>();
@@ -54,7 +52,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-
     @Override
     public void add(Subtask newSubtask) {
         if (timeOverlayCheck(newSubtask)) {
@@ -90,7 +87,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-
     @Override
     public void add(Epic newEpic) {
         newEpic.setTaskId(id);
@@ -98,13 +94,11 @@ public class InMemoryTaskManager implements TaskManager {
         epicList.put(newEpic.getTaskId(), newEpic);
     }
 
-
     @Override
     public void addWithId(Epic newEpic) {
         newEpic.setTaskId(newEpic.getTaskId());
         epicList.put(newEpic.getTaskId(), newEpic);
     }
-
 
     @Override
     public void printTask() {
@@ -170,7 +164,6 @@ public class InMemoryTaskManager implements TaskManager {
                 .map(id -> subtaskList.get(id))
                 .forEach(System.out::println);
     }
-
 
     @Override
     public void removeAllTasks() {
@@ -279,30 +272,22 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public LocalDateTime startEpicTime(Epic epic) {
-        LocalDateTime estimatedTime = epic.getSubtaskId().stream()
+        return epic.getSubtaskId().stream()
                 .filter(id -> subtaskList.get(id).checkStartTime())
-                .map(id -> subtaskList.get(id).getStartTime())
-                .min((time1, time2) -> {
-                            if (time1.isBefore(time2)) {
-                                return -1;
-                            } else if (time1.isAfter(time2)) {
-                                return 1;
-                            } else
-                                return 0;
-                        }
-                )
+                .map(id -> subtaskList.get(id))
+                .min(Comparator.comparing(Task::getStartTime))
+                .map(Task::getStartTime)
                 .orElse(null);
-        return estimatedTime;
     }
+
 
     @Override
     public LocalDateTime endEpicTime(Epic epic) {
-        LocalDateTime estimatedTime = epic.getSubtaskId().stream()
+        return epic.getSubtaskId().stream()
                 .filter(id -> subtaskList.get(id).checkStartTime())
                 .map(id -> subtaskList.get(id).getEndTime())
                 .max(LocalDateTime::compareTo)
-                .orElse(null);
-        return estimatedTime;
+                .orElse(null); //вернет LocalDataTime если он не пустой или ноль если пустой
     }
 
 
@@ -392,13 +377,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     public boolean timeOverlayCheck(Task taskForCheking) {
         Set<Task> allTasks = getPrioritizedTasks();
-        if (allTasks.size() != 0 && taskForCheking.checkStartTime()) {
-            boolean isThereAnIntersection = allTasks.stream()
-                    .filter(Task::checkStartTime)
-                    .filter(task -> taskForCheking.getStartTime().isAfter(task.getStartTime()))
-                    .anyMatch(task -> taskForCheking.getStartTime().isBefore(task.getEndTime()));
-            return isThereAnIntersection;
-        } else return false;
+        if (allTasks.isEmpty() || !taskForCheking.checkStartTime()) {
+            return false;
+        }
+        return allTasks.stream()
+                .filter(Task::checkStartTime)
+                .filter(task -> taskForCheking.getStartTime().isAfter(task.getStartTime()))
+                .anyMatch(task -> taskForCheking.getStartTime().isBefore(task.getEndTime()));
 
     }
 }

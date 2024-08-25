@@ -38,10 +38,10 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         } else {
             Node<Task> existingNode = historyMap.get(key);
+            historyMap.remove(key);
             if (existingNode != head && existingNode != tail) {
                 Node<Task> prevExistingNode = existingNode.prev;
                 Node<Task> nextExistingNode = existingNode.next;
-                historyMap.remove(key);
                 prevExistingNode.next = nextExistingNode;
                 nextExistingNode.prev = prevExistingNode;
                 for (Node<Task> node : historyMap.values()) {
@@ -54,10 +54,8 @@ public class InMemoryHistoryManager implements HistoryManager {
                         return;
                     }
                 }
-
             } else if (existingNode == head) {
                 Node<Task> nextExistingNode = existingNode.next;
-                historyMap.remove(key);
                 head = nextExistingNode;
                 nextExistingNode.prev = null;
                 for (Node<Task> node : historyMap.values()) {
@@ -72,12 +70,10 @@ public class InMemoryHistoryManager implements HistoryManager {
                 }
             } else if (existingNode == tail) {
                 Node<Task> prevExistingNode = existingNode.prev;
-                historyMap.remove(key);
                 Node<Task> tailNode = new Node<>(prevExistingNode, value, null);
                 prevExistingNode.next = tailNode;
                 historyMap.put(key, tailNode);
                 tail = tailNode;
-
             }
         }
     }
@@ -103,20 +99,18 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void removeFromHistory(Integer key) {
         if (historyMap.containsKey(key)) {
             Node<Task> deletedNode = historyMap.get(key);
+            historyMap.remove(key);
             if (deletedNode != head && deletedNode != tail) {
                 Node<Task> prevDeletedNode = deletedNode.prev;
                 Node<Task> nextDeletedNode = deletedNode.next;
-                historyMap.remove(key);
                 prevDeletedNode.next = nextDeletedNode;
                 nextDeletedNode.prev = prevDeletedNode;
             } else if (deletedNode == head) {
                 Node<Task> nextDeletedNode = deletedNode.next;
-                historyMap.remove(key);
                 head = nextDeletedNode;
                 nextDeletedNode.prev = null;
             } else if (deletedNode == tail) {
                 Node<Task> prevDeletedNode = deletedNode.prev;
-                historyMap.remove(key);
                 tail = prevDeletedNode;
                 prevDeletedNode.next = null;
             }
