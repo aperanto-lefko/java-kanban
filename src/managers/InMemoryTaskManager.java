@@ -186,23 +186,23 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task searchTaskById(int idNumber) {
-        Optional<Task> taskForCheking = Optional.ofNullable(taskList.get(idNumber));
+    public Task searchTaskById(int id) {
+        Optional<Task> taskForCheking = Optional.ofNullable(taskList.get(id));
         taskForCheking.ifPresent(task -> history.add(task));
         return taskForCheking.orElse(null);
     }
 
 
     @Override
-    public Subtask searchSubtaskById(int idNumber) {
-        Optional<Subtask> subtaskForCheking = Optional.ofNullable(subtaskList.get(idNumber));
+    public Subtask searchSubtaskById(int id) {
+        Optional<Subtask> subtaskForCheking = Optional.ofNullable(subtaskList.get(id));
         subtaskForCheking.ifPresent(task -> history.add(task));
         return subtaskForCheking.orElse(null);
     }
 
     @Override
-    public Epic searchEpicById(int idNumber) {
-        Optional<Epic> epicForCheking = Optional.ofNullable(epicList.get(idNumber));
+    public Epic searchEpicById(int id) {
+        Optional<Epic> epicForCheking = Optional.ofNullable(epicList.get(id));
         epicForCheking.ifPresent(task -> history.add(task));
         return epicForCheking.orElse(null);
 
