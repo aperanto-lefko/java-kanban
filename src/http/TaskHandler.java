@@ -21,7 +21,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         String[] split = ex.getRequestURI().getPath().split("/");
         switch (method) {
             case "GET":
-               if (split.length==2) {
+                if (split.length == 2) {
                     handleGetTasksResponse(ex);
                 } else {
                     Optional<Integer> id = getId(ex);
@@ -45,18 +45,18 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     public void handleGetTasksResponse(HttpExchange ex) throws IOException {
 
         if (taskManager.getTaskList().isEmpty()) {
-           sendText(ex, "Список задач пуст", 404);
+            sendText(ex, "Список задач пуст", 404);
         } else {
 
-            sendText(ex, gson.toJson(taskManager.getTaskList().toString()),200);
+            sendText(ex, gson.toJson(taskManager.getTaskList().toString()), 200);
         }
     }
 
     public void handleGetTaskByIdResponse(HttpExchange ex, int id) throws IOException {
         if (!taskManager.getTaskList().containsKey(id)) {
-           sendText(ex, "Задача не найдена", 404);
+            sendText(ex, "Задача не найдена", 404);
         } else {
-           sendText(ex, gson.toJson(taskManager.getTaskList().get(id).toString()), 200);
+            sendText(ex, gson.toJson(taskManager.getTaskList().get(id).toString()), 200);
         }
     }
 
