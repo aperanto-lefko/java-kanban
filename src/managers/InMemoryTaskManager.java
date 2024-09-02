@@ -308,7 +308,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!taskList.isEmpty()) {
             taskList.remove(idNumber);
             history.remove(idNumber); //новая строка удаляем из истории просмотра
-            System.out.println("Задача с id " + idNumber + ": " + "удалена");
+            System.out.println("Задача с id " + idNumber + ": " + " удалена");
 
         } else {
             System.out.println("Список задач пуст");

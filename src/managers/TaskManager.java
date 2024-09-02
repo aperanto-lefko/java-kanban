@@ -56,7 +56,6 @@ public interface TaskManager {
 
     void removeEpicById(int idNumber);
 
-
     Map<Integer, Task> getTaskList();
 
     Map<Integer, Subtask> getSubtaskList();

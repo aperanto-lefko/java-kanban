@@ -9,8 +9,11 @@ import enumlists.TaskStatus;
 public class Task {
 
 
-    private final String taskName;
-    private final String taskDescription; //описание
+    private String taskName;
+
+
+
+    private String taskDescription; //описание
 
     private int taskId; //идентификационный номер
     private TaskStatus taskStatus;
@@ -133,6 +136,14 @@ public class Task {
 
     public void setDuration(Duration duration) {
         this.duration = duration;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public void setTaskDescription(String taskDescription) {
+        this.taskDescription = taskDescription;
     }
 }
 
