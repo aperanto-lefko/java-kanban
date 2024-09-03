@@ -8,6 +8,7 @@ import enumlists.TaskStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface TaskManager {
     void add(Task newTask);
@@ -69,5 +70,9 @@ public interface TaskManager {
     LocalDateTime startEpicTime(Epic epic);
 
     LocalDateTime endEpicTime(Epic epic);
+
+    boolean timeOverlayCheck(Task task);
+
+    Set<Task> getPrioritizedTasks();
 
 }

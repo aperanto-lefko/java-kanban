@@ -1,7 +1,5 @@
 package http;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import managers.TaskManager;
 
@@ -11,28 +9,32 @@ import java.net.InetSocketAddress;
 public class HttpTaskServer {
     private static final int PORT = 8080;
     TaskManager taskManager;
+    private HttpServer httpServer;
 
     public HttpTaskServer(TaskManager taskManager) {
         this.taskManager = taskManager;
+
     }
-
-    private HttpServer httpServer;
-
 
     public void createHttpServer() throws IOException {
         httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
 
         httpServer.createContext("/tasks", new TaskHandler(taskManager));
-        // httpServer.createContext("/subtasks", new SubtaskHandler());
-        // httpServer.createContext("/epics", new EpicHandler());
-        // httpServer.createContext("/history", new HistoryHandler());
-        //httpServer.createContext("/prioritized", new PriorityHandler());
+        httpServer.createContext("/subtasks", new SubtaskHandler(taskManager));
+        httpServer.createContext("/epics", new EpicHandler(taskManager));
+        httpServer.createContext("/history", new HistoryHandler(taskManager));
+        httpServer.createContext("/prioritized", new PriorityHandler(taskManager));
 
     }
 
     public void start() {
         httpServer.start();
         System.out.println("HTTP-сервер запущен на " + PORT + " порту");
+    }
+
+    public void stop() {
+        httpServer.stop(1);
+        System.out.println("HTTP-сервер остановлен");
     }
 
 }

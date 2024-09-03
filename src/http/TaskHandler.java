@@ -16,47 +16,60 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange ex) throws IOException {
+    public void handle(HttpExchange ex) {
         String method = ex.getRequestMethod();
         String[] split = ex.getRequestURI().getPath().split("/");
-        switch (method) {
-            case "GET":
-                if (split.length == 2) {
-                    handleGetTasksResponse(ex);
-                } else {
-                    Optional<Integer> id = getId(ex);
-                    if (id.isPresent()) {
-                        handleGetTaskByIdResponse(ex, id.get());
+        try {
+            switch (method) {
+                case "GET":
+                    if (split.length == 2) {
+                        handleGetTasksResponse(ex);
+                    } else {
+                        if (getId(ex).isPresent()) {
+                            handleGetTaskByIdResponse(ex, getId(ex).get());
+                        } else {
+                            sendIncorrectId(ex);
+                        }
                     }
-                }
-                break;
-            case "DELETE":
-                if (getId(ex).isPresent()) {
-                    handleDeleteTask(ex, getId(ex).get()); //сделать тест на удаление
-                }
-                break;
-            case "POST":
-                handlePostTask(ex);
-                break;
+                    break;
+                case "DELETE":
+                    if (getId(ex).isPresent()) {
+                        handleDeleteTask(ex, getId(ex).get()); //сделать тест на удаление
+                    } else {
+                        sendIncorrectId(ex);
+                    }
+                    break;
+                case "POST":
+                    handlePostTask(ex);
+                    break;
+                default:
+                    sendIncorrectMethod(ex);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
 
-    public void handleGetTasksResponse(HttpExchange ex) throws IOException {
-
-        if (taskManager.getTaskList().isEmpty()) {
-            sendText(ex, "Список задач пуст", 404);
-        } else {
-
-            sendText(ex, gson.toJson(taskManager.getTaskList().toString()), 200);
+    public void handleGetTasksResponse(HttpExchange ex) {
+        try {
+            if (taskManager.getTaskList().isEmpty()) {
+                sendText(ex, "Список задач пуст", 404);
+            } else {
+                sendText(ex, gson.toJson(taskManager.getTaskList()), 200);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 
     public void handleGetTaskByIdResponse(HttpExchange ex, int id) throws IOException {
         if (!taskManager.getTaskList().containsKey(id)) {
             sendText(ex, "Задача не найдена", 404);
         } else {
-            sendText(ex, gson.toJson(taskManager.getTaskList().get(id).toString()), 200);
+            sendText(ex, gson.toJson(taskManager.searchTaskById(id)), 200);
         }
     }
 
@@ -69,10 +82,30 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void handlePostTask(HttpExchange ex) throws IOException {
-        Task task = gson.fromJson(bodyToString(ex), Task.class);
-        taskManager.add(task);
-        //{"taskName":"Купить кофе", "taskDescription": "Зерновой", "taskStatus": "TaskStatus.NEW" } 2024-10-15T09:50
-        sendText(ex, "Задача добавлена", 200);
+    public void handlePostTask(HttpExchange ex) {
+        try {
+            String exchange = bodyToString(ex);
+            if (exchange.isEmpty()) {
+                sendText(ex, "Ничего не передано", 400);
+            } else {
+                Task task = gson.fromJson(exchange, Task.class);
+                Optional<Integer> id = Optional.of(task.getTaskId());
+                if (taskManager.timeOverlayCheck(task)) {
+                    sendText(ex, "Задача не добавлена, так как имеет наложение по времени", 406);
+                } else if (id.get() == 0) {
+                    taskManager.add(task);
+                    sendText(ex, "Задача добавлена", 201); //добавить тест на проверку задачи
+                } else {
+                    taskManager.update(task);
+                    sendText(ex, "Задача с id " + id.get() + " обновлена", 201);
+                }
+            }
+        } catch (IOException e) {
+            e.getMessage();
+        }
     }
 }
+/* Задача для проверки {"taskName":"Купить кофе", "taskDescription": "Зерновой", "taskStatus": "NEW" }
+                       {"taskName":"Купить корм", "taskDescription": "Для толстых котов", "taskStatus": "NEW",
+                        "taskId": 6, "startTime":"12.01.2024 15:33","duration": 30}*/
+

@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
-
 public class InMemoryTaskManager implements TaskManager {
 
     private int id = 1;
@@ -360,14 +359,17 @@ public class InMemoryTaskManager implements TaskManager {
         return taskList;
     }
 
+    @Override
     public Map<Integer, Subtask> getSubtaskList() {
         return subtaskList;
     }
 
+    @Override
     public Map<Integer, Epic> getEpicList() {
         return epicList;
     }
 
+    @Override
     public Set<Task> getPrioritizedTasks() {
         if (!taskList.isEmpty()) {
             for (int i : taskList.keySet()) {
@@ -387,6 +389,7 @@ public class InMemoryTaskManager implements TaskManager {
         return prioritizedTasks;
     }
 
+    @Override
     public boolean timeOverlayCheck(Task taskForCheking) {
         Set<Task> allTasks = getPrioritizedTasks();
         if (allTasks.isEmpty() || !taskForCheking.checkStartTime()) {
