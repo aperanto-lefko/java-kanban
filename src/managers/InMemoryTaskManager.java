@@ -25,13 +25,13 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Subtask> subtaskList = new HashMap<>();
     private Map<Integer, Epic> epicList = new HashMap<>();
 
-    Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
+    private Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
     private Set<Task> prioritizedTasks = new TreeSet<>(comparator);
 
-    Managers manager = new Managers();
-    HistoryManager history = manager.getDefaultHistory();
+    private Managers manager = new Managers();
+    private HistoryManager history = manager.getDefaultHistory();
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public void generateNextId() {
         id++;

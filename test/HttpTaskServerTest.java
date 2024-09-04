@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
 import enumlists.TaskStatus;
 import http.BaseHttpHandler;
 import http.HttpTaskServer;
@@ -16,19 +17,22 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class HttpTaskServerTest {
-    TaskManager taskManager = new InMemoryTaskManager();
-    BaseHttpHandler handler = new BaseHttpHandler(taskManager);
-    HttpTaskServer taskServer = new HttpTaskServer(taskManager);
-    Gson gson = handler.getGson();
+    public TaskManager taskManager = new InMemoryTaskManager();
+    public BaseHttpHandler handler = new BaseHttpHandler(taskManager);
+    public HttpTaskServer taskServer = new HttpTaskServer(taskManager);
+    public Gson gson = handler.getGson();
 
     public HttpTaskServerTest() throws IOException {
     }
@@ -62,7 +66,7 @@ public class HttpTaskServerTest {
         assertEquals(201, response.statusCode());
         Map<Integer, Task> tasksFromManager = taskManager.getTaskList();
         assertNotNull(tasksFromManager, "Список пуст");
-        Assertions.assertEquals("Test 2", tasksFromManager.get(1).getTaskName(), "Некорректное имя задачи");
+        Assertions.assertEquals("Test 2", Optional.of(tasksFromManager.get(1).getTaskName()).orElse("Имя отсутствует"), "Некорректное имя задачи");
         System.out.println(tasksFromManager.get(1).getTaskId());
     }
 
@@ -116,7 +120,7 @@ public class HttpTaskServerTest {
         Map<Integer, Task> map = taskManager.getTaskList();
         assertEquals(201, responseUpdate.statusCode());
         assertEquals("Задача с id 1 обновлена", responseUpdate.body());
-        assertEquals("Test 2.1", taskManager.getTaskList().get(1).getTaskName());
+        assertEquals("Test 2.1", Optional.of(taskManager.getTaskList().get(1).getTaskName()).orElse("Имя отсутствует"));
     }
 
     @Test
@@ -127,7 +131,6 @@ public class HttpTaskServerTest {
                 TaskStatus.NEW, Duration.ofMinutes(20), LocalDateTime.of(2024, 01, 01, 07, 13));
         Task task3 = new Task("Test 3", "Testing task 3",
                 TaskStatus.NEW, Duration.ofMinutes(35), LocalDateTime.of(2024, 02, 14, 21, 02));
-
         URI url = URI.create("http://localhost:8080/tasks");
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request1 = HttpRequest.newBuilder()
@@ -149,7 +152,10 @@ public class HttpTaskServerTest {
                 .findFirst()
                 .orElse(null);
         assert firstTask != null;
-        Assertions.assertEquals("Test 2", firstTask.getTaskName(), "Задача не на первом месте");
+        Assertions.assertEquals("Test 2", Optional.of(firstTask.getTaskName()).orElse("Имя отсутствует"), "Задача не на первом месте");
     }
 }
 
+class TaskTypeToken extends TypeToken<List<Task>> {
+
+}

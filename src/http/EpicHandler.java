@@ -44,8 +44,8 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                     sendIncorrectMethod(ex);
                     break;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
         }
     }
 
@@ -57,7 +57,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                 sendText(ex, gson.toJson(taskManager.getEpicList()), 200);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
         }
     }
 
@@ -95,7 +95,7 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                 }
             }
         } catch (IOException e) {
-            e.getMessage();
+            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
         }
     }
 }

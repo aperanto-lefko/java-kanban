@@ -1,7 +1,10 @@
 package http;
 
+import Adapters.DurationAdapter;
+import Adapters.LocalDateTimeAdapter;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -9,12 +12,13 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 import com.google.gson.Gson;
 import managers.TaskManager;
 
 public class BaseHttpHandler {
-    TaskManager taskManager;
-    protected static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    public TaskManager taskManager;
+    private final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     public BaseHttpHandler(TaskManager taskManager) {
         this.taskManager = taskManager;

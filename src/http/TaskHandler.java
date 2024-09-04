@@ -34,7 +34,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                     break;
                 case "DELETE":
                     if (getId(ex).isPresent()) {
-                        handleDeleteTask(ex, getId(ex).get()); //сделать тест на удаление
+                        handleDeleteTask(ex, getId(ex).get());
                     } else {
                         sendIncorrectId(ex);
                     }
@@ -46,8 +46,8 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                     sendIncorrectMethod(ex);
                     break;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
         }
     }
 
@@ -60,7 +60,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 sendText(ex, gson.toJson(taskManager.getTaskList()), 200);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
         }
     }
 
@@ -101,7 +101,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                 }
             }
         } catch (IOException e) {
-            e.getMessage();
+            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
         }
     }
 }

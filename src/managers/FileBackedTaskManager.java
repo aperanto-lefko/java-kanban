@@ -136,7 +136,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             if (!tasksLine[6].equals("null")) {
                                 endEpicTime = LocalDateTime.parse(tasksLine[6]);
                             }
-                            Epic epic = new Epic(tasksLine[2], tasksLine[4], id, status);
+                            Epic epic = new Epic(tasksLine[2], tasksLine[4], id, status, startTime, endEpicTime);
                             taskManager.addWithId(epic);
                             break;
                         case "SUBTASK":

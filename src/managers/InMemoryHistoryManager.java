@@ -16,8 +16,8 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public Node<Task> head; //голова
     public Node<Task> tail = null; //хвост
-    public Node<Task> task;
 
+    public Node<Task> task;
     public Node<Task> oldTail; //старый хвост
 
     @Override
@@ -81,14 +81,16 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public List<Task> printHistoryMap() {
         List<Task> historyList = new LinkedList<>();
-        historyList.add(head.task);
-        while (historyList.size() != historyMap.size()) {
-            for (Node<Task> node : historyMap.values()) {
-                Task lastNode = historyList.getLast();
-                Node<Task> newNode = node;
-                Node<Task> prevNewNode = newNode.prev;
-                if (newNode.prev != null && prevNewNode.task.equals(lastNode)) {
-                    historyList.add(newNode.task);
+        if (head != null) {
+            historyList.add(head.task);
+            while (historyList.size() != historyMap.size()) {
+                for (Node<Task> node : historyMap.values()) {
+                    Task lastNode = historyList.getLast();
+                    Node<Task> newNode = node;
+                    Node<Task> prevNewNode = newNode.prev;
+                    if (newNode.prev != null && prevNewNode.task.equals(lastNode)) {
+                        historyList.add(newNode.task);
+                    }
                 }
             }
         }

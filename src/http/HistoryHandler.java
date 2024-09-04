@@ -28,16 +28,20 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
                     sendIncorrectMethod(ex);
                     break;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
         }
     }
 
-    public void handleGetHistory(HttpExchange ex) throws IOException {
+    public void handleGetHistory(HttpExchange ex)  {
         try {
-            sendText(ex, gson.toJson(taskManager.getHistory()), 200);
-        } catch (NullPointerException e) {
-            sendText(ex, "Список просмотра пуст", 404);
+            if (!taskManager.getHistory().isEmpty()) {
+                sendText(ex, gson.toJson(taskManager.getHistory()), 200);
+            } else {
+                sendText(ex, gson.toJson("Список просмотра пуст"), 400);
+            }
+        } catch (IOException e) {
+            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
         }
     }
 }
