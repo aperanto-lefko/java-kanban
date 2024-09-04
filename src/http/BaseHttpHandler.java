@@ -18,7 +18,7 @@ import managers.TaskManager;
 
 public class BaseHttpHandler {
     public TaskManager taskManager;
-    private Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    private Charset utf = StandardCharsets.UTF_8;
 
     public BaseHttpHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
@@ -35,7 +35,7 @@ public class BaseHttpHandler {
         ex.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         ex.sendResponseHeaders(code, 0);
         try (OutputStream os = ex.getResponseBody()) {
-            os.write(response.getBytes(DEFAULT_CHARSET));
+            os.write(response.getBytes(utf));
         }
     }
 
@@ -43,7 +43,7 @@ public class BaseHttpHandler {
         ex.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         ex.sendResponseHeaders(400, 0);
         try (OutputStream os = ex.getResponseBody()) {
-            os.write("id введен некорректно".getBytes(DEFAULT_CHARSET));
+            os.write("id введен некорректно".getBytes(utf));
         }
     }
 
@@ -51,7 +51,7 @@ public class BaseHttpHandler {
         ex.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         ex.sendResponseHeaders(400, 0);
         try (OutputStream os = ex.getResponseBody()) {
-            os.write("Обработка метода не предусмотрена".getBytes(DEFAULT_CHARSET));
+            os.write("Обработка метода не предусмотрена".getBytes(utf));
         }
     }
 
@@ -65,7 +65,7 @@ public class BaseHttpHandler {
     }
 
     public String bodyToString(HttpExchange ex) throws IOException {
-        return new String(ex.getRequestBody().readAllBytes(), DEFAULT_CHARSET);
+        return new String(ex.getRequestBody().readAllBytes(), utf);
     }
 
     public Gson getGson() {
