@@ -18,7 +18,7 @@ import managers.TaskManager;
 
 public class BaseHttpHandler {
     public TaskManager taskManager;
-    private final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    private Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     public BaseHttpHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
