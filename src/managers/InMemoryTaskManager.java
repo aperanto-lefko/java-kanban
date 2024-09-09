@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
-
 public class InMemoryTaskManager implements TaskManager {
 
     private int id = 1;
@@ -26,13 +25,13 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Subtask> subtaskList = new HashMap<>();
     private Map<Integer, Epic> epicList = new HashMap<>();
 
-    Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
+    private Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
     private Set<Task> prioritizedTasks = new TreeSet<>(comparator);
 
-    Managers manager = new Managers();
-    HistoryManager history = manager.getDefaultHistory();
+    private Managers manager = new Managers();
+    private HistoryManager history = manager.getDefaultHistory();
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public void generateNextId() {
         id++;
@@ -308,7 +307,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (!taskList.isEmpty()) {
             taskList.remove(idNumber);
             history.remove(idNumber); //новая строка удаляем из истории просмотра
-            System.out.println("Задача с id " + idNumber + ": " + "удалена");
+            System.out.println("Задача с id " + idNumber + ": " + " удалена");
 
         } else {
             System.out.println("Список задач пуст");
@@ -360,14 +359,17 @@ public class InMemoryTaskManager implements TaskManager {
         return taskList;
     }
 
+    @Override
     public Map<Integer, Subtask> getSubtaskList() {
         return subtaskList;
     }
 
+    @Override
     public Map<Integer, Epic> getEpicList() {
         return epicList;
     }
 
+    @Override
     public Set<Task> getPrioritizedTasks() {
         if (!taskList.isEmpty()) {
             for (int i : taskList.keySet()) {
@@ -387,6 +389,7 @@ public class InMemoryTaskManager implements TaskManager {
         return prioritizedTasks;
     }
 
+    @Override
     public boolean timeOverlayCheck(Task taskForCheking) {
         Set<Task> allTasks = getPrioritizedTasks();
         if (allTasks.isEmpty() || !taskForCheking.checkStartTime()) {

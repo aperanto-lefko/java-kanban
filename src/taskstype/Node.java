@@ -1,6 +1,7 @@
 package taskstype;
 
 public class Node<T> {
+
     public T task;
     public Node<T> next;
     public Node<T> prev;

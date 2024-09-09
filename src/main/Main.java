@@ -1,6 +1,7 @@
 package main;
 
 import enumlists.TaskStatus;
+import http.HttpTaskServer;
 import managers.FileBackedTaskManager;
 import managers.Managers;
 import managers.TaskManager;
@@ -9,11 +10,12 @@ import taskstype.Subtask;
 import taskstype.Task;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Managers manager = new Managers();
 
         TaskManager taskManager = manager.getDefault();
@@ -70,6 +72,11 @@ public class Main {
         taskManager2.printEpic();
         System.out.println("Проверка добавления подзадач");
         taskManager2.printSubtask();
+
+        HttpTaskServer httpTaskServer = new HttpTaskServer(taskManagerWithFile);
+        httpTaskServer.createHttpServer();
+        httpTaskServer.start();
+
 
     }
 }
